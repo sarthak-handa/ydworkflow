@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YOGIJI DIGI - Project Execution Workflow – Execution & Closure</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="yd-favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="yd-favicon.png">
+    <link rel="apple-touch-icon" href="yd-favicon.png">
+    <style>
+        /* === YOGI JI DIGI CORPORATE PALETTE === */
+        :root {
+            --yd-red: #AF202D;        /* Exact Logo Red */
+            --yd-dark-red: #821520;
+            --yd-grey: #5A6360;       /* Exact Logo Grey */
+            --yd-light-grey: #f4f6f8;
+            --bg-gradient: radial-gradient(circle at top right, #ffffff, #e3e8ec);
+            --grid-color: rgba(90, 99, 96, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.75); /* Futuristic Glass */
+            --text-main: #2c3e50;
+            --text-muted: #546e7a;
+            --success-green: #27ae60;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --info-bg: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(244,246,248,0.9) 100%);
+        }
+
+        /* === DARK MODE PALETTE === */
+        body.dark-mode {
+            --yd-light-grey: #2d3748;
+            --bg-gradient: radial-gradient(circle at top right, #1a1e21, #0d1113);
+            --grid-color: rgba(255, 255, 255, 0.03);
+            --card-bg: rgba(30, 35, 40, 0.85);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --header-bg: rgba(20, 24, 28, 0.9);
+            --info-bg: linear-gradient(135deg, rgba(30,35,40,0.9) 0%, rgba(20,24,28,0.9) 100%);
+        }
+
+        /* === GLOBAL RESET & NO-SCROLL LOCK === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* STRICT NO SCROLLING ON DESKTOP */
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* Futuristic Background animated grid */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 3vw 3vw;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+            transition: background-image 0.4s ease;
+        }
+
+        /* === HEADER === */
+        header {
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3vw;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--yd-red);
+            box-shadow: 0 4px 15px rgba(175, 32, 45, 0.1);
+            z-index: 100;
+            transition: background 0.4s ease;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 7vh;
+            max-width: 250px;
+            object-fit: contain;
+            animation: slideInLeft 1s ease-out;
+            cursor: pointer;
+            transition: transform 0.3s, filter 0.4s;
+        }
+        .logo:hover { transform: scale(1.05); }
+        body.dark-mode .logo { filter: brightness(0) invert(1) opacity(0.9); }
+
+        /* Dark Mode & Navigation Switches */
+        .controls-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .theme-switch, .nav-btn {
+            background: var(--yd-light-grey);
+            border: 1px solid var(--yd-grey);
+            border-radius: 20px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .nav-btn {
+            border-color: var(--yd-red);
+            color: var(--yd-red);
+            background: rgba(175, 32, 45, 0.05);
+        }
+        .theme-switch:hover {
+            border-color: var(--yd-red);
+            color: var(--yd-red);
+        }
+        .nav-btn:hover {
+            background: var(--yd-red);
+            color: white;
+        }
+        body.dark-mode .nav-btn { color: #ff8c94; border-color: #ff8c94; }
+        body.dark-mode .nav-btn:hover { background: #ff8c94; color: #1a1e21; }
+
+        .title-box { text-align: right; }
+        .title-box h1 {
+            font-size: clamp(1.1rem, 1.6vw, 2.2rem);
+            color: var(--yd-red);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.2vh;
+        }
+        .title-box p {
+            font-size: clamp(0.85rem, 1vw, 1.2rem);
+            color: var(--yd-grey);
+            font-weight: 600;
+        }
+
+        /* === PROGRESS INDICATOR (Hidden on Desktop) === */
+        .progress-container {
+            display: none;
+            width: 100%;
+            height: 4px;
+            background: var(--yd-light-grey);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--yd-red);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        /* === MAIN GRID LAYOUT (Page 2 Mapping) === */
+        main {
+            flex: 1;
+            padding: 1.5vh 2vw;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: 1fr 1fr;
+            gap: 1.5vh 1.5vw;
+            position: relative;
+        }
+
+        /* Grid Areas Mapping */
+        .stage-6 { grid-column: 1; grid-row: 1; }
+        .stage-7 { grid-column: 2; grid-row: 1; }
+        .stage-8 { grid-column: 3; grid-row: 1; }
+        .stage-9 { grid-column: 4; grid-row: 1; }
+        .stage-10 { grid-column: 5; grid-row: 1; }
+        .stage-11 { grid-column: 5; grid-row: 2; }
+
+        /* === CARD STYLING === */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(175, 32, 45, 0.2);
+            border-top: 4px solid var(--yd-grey);
+            border-radius: 12px;
+            padding: 1.2vh 1vw;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            position: relative;
+            cursor: default;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s, border 0.4s;
+            opacity: 0;
+            animation: fadeUp 0.8s forwards;
+        }
+
+        .card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(175, 32, 45, 0.15);
+            border-color: var(--yd-red);
+            border-top-color: var(--yd-red);
+            z-index: 50;
+        }
+
+        /* Delays */
+        .stage-6 { animation-delay: 0.1s; border-top-color: var(--yd-red); }
+        .stage-7 { animation-delay: 0.2s; }
+        .stage-8 { animation-delay: 0.3s; border: 2px solid var(--yd-red); box-shadow: inset 0 0 15px rgba(175, 32, 45, 0.05); }
+        .stage-9 { animation-delay: 0.4s; }
+        .stage-10 { animation-delay: 0.5s; }
+        .stage-11 { animation-delay: 0.6s; border-top-color: var(--success-green); }
+
+        /* Typography Inside Cards */
+        .card-header {
+            font-size: clamp(0.9rem, 1.1vw, 1.3rem);
+            font-weight: 800;
+            color: var(--yd-red);
+            border-bottom: 1px solid rgba(175, 32, 45, 0.2);
+            padding-bottom: 0.5vh;
+            margin-bottom: 0.8vh;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .toggle-icon { display: none; font-size: 1rem; color: var(--yd-red); transition: transform 0.3s; }
+
+        .collapsible-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .roster {
+            background: rgba(128, 128, 128, 0.08);
+            padding: 0.8vh 0.6vw;
+            border-radius: 6px;
+            margin-bottom: 0.8vh;
+            border-left: 3px solid var(--yd-grey);
+            transition: border-color 0.3s;
+        }
+        .card:hover .roster { border-left-color: var(--yd-red); }
+
+        .roster-title {
+            font-size: clamp(0.75rem, 0.9vw, 1rem);
+            color: var(--yd-grey);
+            font-weight: 700;
+            margin-bottom: 0.3vh;
+            text-transform: uppercase;
+        }
+
+        .names {
+            list-style: none;
+            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .names li {
+            transition: transform 0.2s ease, color 0.2s ease;
+            cursor: pointer;
+        }
+        .names li:hover {
+            transform: translateX(4px);
+            color: var(--yd-red);
+        }
+
+        .names span {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        .action-text {
+            font-size: clamp(0.7rem, 0.85vw, 1rem);
+            color: var(--text-muted);
+            line-height: 1.3;
+            flex-grow: 1;
+        }
+        .action-text strong { color: var(--text-main); }
+        .action-text ul { padding-left: 1vw; margin-top: 0.5vh; }
+
+        /* SLA Alert Boxes */
+        .sla-box {
+            margin-top: auto;
+            background: rgba(175, 32, 45, 0.05);
+            border: 1px dashed var(--yd-red);
+            padding: 0.6vh 0.8vw;
+            border-radius: 6px;
+            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
+            color: var(--yd-dark-red);
+            transition: background 0.3s;
+        }
+        body.dark-mode .sla-box { color: #ff8c94; background: rgba(175, 32, 45, 0.15); }
+        
+        .card:hover .sla-box {
+            background: rgba(175, 32, 45, 0.1);
+            animation: pulseAlert 2s infinite;
+        }
+
+        /* === SYSTEM FOOTER NOTE === */
+        footer {
+            height: 4vh;
+            background: var(--yd-grey);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.7rem, 0.85vw, 1rem);
+            letter-spacing: 0.5px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--yd-red);
+            box-shadow: 0 0 10px var(--yd-red);
+        }
+        .footer-note { font-weight: 400; text-align: center; padding: 0 10px; }
+        .footer-note strong { font-weight: 700; color: #ffcccc; }
+
+        /* === ANIMATED FLOW ARROWS (Desktop) === */
+        .arrow {
+            position: absolute;
+            color: var(--yd-red);
+            font-size: clamp(1.5rem, 2vw, 2.5rem);
+            z-index: 10;
+            animation: flowMove 2s infinite ease-in-out;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(175, 32, 45, 0.4);
+        }
+
+        .arrow-6-7 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-7-8 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-8-9 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-9-10 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-10-11 { bottom: -2vh; left: 50%; transform: translateX(-50%) rotate(90deg); animation: flowDown 2s infinite ease-in-out;}
+
+        /* Backward Iteration Loop Arrow */
+        .loop-path {
+            position: absolute;
+            bottom: -2.5vh;
+            right: 50%; /* Start exactly middle of Stage 9 */
+            width: calc(200% + 3vw); /* Span backwards exactly across 2 columns + 2 gaps */
+            height: 2vh;
+            border-bottom: 2px dashed var(--yd-red);
+            border-left: 2px dashed var(--yd-red);
+            border-right: 2px dashed var(--yd-red);
+            border-radius: 0 0 10px 10px;
+            z-index: 5;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .loop-path::before {
+            content: "◄";
+            position: absolute;
+            left: -8px;
+            bottom: 3px;
+            color: var(--yd-red);
+            font-size: 1.2rem;
+            animation: pulseAlert 2s infinite;
+        }
+        .loop-label {
+            position: absolute;
+            bottom: -4.5vh;
+            right: 100%;
+            transform: translateX(50%);
+            font-size: clamp(0.6rem, 0.7vw, 0.8rem);
+            font-weight: 800;
+            color: var(--yd-red);
+            background: var(--header-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px dashed var(--yd-red);
+            z-index: 11;
+        }
+
+        /* === KEYFRAMES === */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseAlert {
+            0% { box-shadow: 0 0 0 0 rgba(175, 32, 45, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(175, 32, 45, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(175, 32, 45, 0); }
+        }
+        @keyframes flowMove {
+            0% { transform: translate(0, -50%); opacity: 0.6; }
+            50% { transform: translate(6px, -50%); opacity: 1; text-shadow: 0 0 10px var(--yd-red);}
+            100% { transform: translate(0, -50%); opacity: 0.6; }
+        }
+        @keyframes flowDown {
+            0% { transform: translate(-50%, 0) rotate(90deg); opacity: 0.6; }
+            50% { transform: translate(-50%, 6px) rotate(90deg); opacity: 1; text-shadow: 0 0 10px var(--yd-red);}
+            100% { transform: translate(-50%, 0) rotate(90deg); opacity: 0.6; }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 3vw 3vw; }
+        }
+
+        /* ============================= */
+        /* 📱 MOBILE RESPONSIVE MODE     */
+        /* ============================= */
+        @media (max-width: 1024px) {
+
+            body {
+                height: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .progress-container { display: block; }
+
+            header {
+                height: auto;
+                flex-direction: column;
+                padding: 1rem;
+                text-align: center;
+                gap: 15px;
+                position: relative;
+            }
+            .logo-container {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            .controls-group { width: 100%; justify-content: center; }
+            .logo { height: 50px; }
+            .title-box { text-align: center; }
+
+            /* App-like Swipe Snapping */
+            main {
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+                padding: 20px;
+                scroll-snap-type: y mandatory;
+            }
+
+            .card {
+                width: 100%;
+                min-height: auto;
+                animation: fadeUp 0.6s forwards;
+                scroll-snap-align: start;
+                scroll-margin-top: 20px;
+            }
+
+            /* Tap to expand accordion logic */
+            .toggle-icon { display: block; }
+            .card-header { cursor: pointer; user-select: none; margin-bottom: 0; padding-bottom: 0.8vh;}
+            
+            .collapsible-content {
+                max-height: 0;
+                opacity: 0;
+                margin-top: 0;
+            }
+            
+            .card.active .collapsible-content {
+                max-height: 600px; /* Increased to allow Stage 8 content space */
+                opacity: 1;
+                margin-top: 1vh;
+            }
+            .card.active .toggle-icon {
+                transform: rotate(180deg);
+            }
+
+            /* Remove complex grid placement */
+            .stage-6, .stage-7, .stage-8, .stage-9, .stage-10, .stage-11 {
+                grid-column: auto !important;
+                grid-row: auto !important;
+            }
+
+            /* Hide desktop arrows & branch labels */
+            .arrow, .loop-path, .loop-label { display: none; }
+
+            /* Add simple vertical downward connector */
+            .card::after {
+                content: "⬇";
+                position: absolute;
+                bottom: -22px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 20px;
+                color: var(--yd-red);
+                animation: flowDownMobile 1.5s infinite ease-in-out;
+            }
+
+            /* Remove arrow after the last element */
+            .stage-11::after { display: none; }
+
+            footer {
+                height: auto;
+                padding: 15px 10px;
+            }
+        }
+
+        /* Mobile arrow animation */
+        @keyframes flowDownMobile {
+            0% { transform: translate(-50%, 0); opacity: 0.6; }
+            50% { transform: translate(-50%, 6px); opacity: 1; text-shadow: 0 0 8px var(--yd-red);}
+            100% { transform: translate(-50%, 0); opacity: 0.6; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header>
+        <div class="logo-container">
+            <img src="YDLOGO.png" alt="Yogi Ji Digi Logo" class="logo">
+            <div class="controls-group">
+                <button class="theme-switch" id="theme-toggle">🌙 Dark Mode</button>
+                <a href="index.html" class="nav-btn">← Back to Initiation Flow</a>
+            </div>
+        </div>
+        <div class="title-box">
+            <h1>Project Execution Workflow</h1>
+            <p>Execution & Closure</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="card stage-6 active">
+            <div class="card-header">STAGE 6: Dispatch Schedule <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Planning & Forecasting</div>
+                    <ul class="names">
+                        <li>Mr. Shivendu Sharma</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Components are grouped into Subassemblies and Assemblies with:<br><br>
+                    <strong>• Dispatch Month</strong><br>
+                    <strong>• Tentative Billing Value</strong>
+                </div>
+                <div class="sla-box">
+                    ⏱️ SLA: <strong>7 Days</strong><br>
+                    ⚠️ Auto Escalate to: Mr. Navneet Singh & Mr. Sameer Bansal
+                </div>
+            </div>
+            <div class="arrow arrow-6-7">➔</div>
+        </div>
+
+        <div class="card stage-7">
+            <div class="card-header">STAGE 7: BOM Freeze <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Design Team</div>
+                    <ul class="names">
+                        <li>Mr. SK Tripathi <span>(Director)</span></li>
+                        <li>Surajpal Singh <span>(Electrical)</span></li>
+                        <li>Sanjay N. & Krishna P. <span>(Mumbai)</span></li>
+                        <li>Vinit J, Smith K, Brijraj <span>(Mech)</span></li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Design converts commercial structure into technical structure and releases BOM to PM, including:
+                    <ul>
+                        <li>Drawing Number</li>
+                        <li>Quantity & Material</li>
+                        <li>Weight Parameters</li>
+                    </ul>
+                </div>
+                <div class="sla-box">
+                    ⏱️ SLA: <strong>10 Days</strong><br>
+                    ⚠️ Auto Escalate to: Mr. Navneet Singh & Mr. Sameer Bansal
+                </div>
+            </div>
+            <div class="arrow arrow-7-8">➔</div>
+        </div>
+
+        <div class="card stage-8">
+            <div class="card-header" style="background:var(--yd-red); color:white; padding: 0.5vh 1vh; border-radius:6px;">STAGE 8: Execution <span class="toggle-icon" style="color:white;">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Execution Floor</div>
+                    <ul class="names">
+                        <li>Project Manager <span>(Allocated)</span></li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    <strong>Heavy Execution Phase:</strong>
+                    <ul>
+                        <li>Procurement (BOI / In-House)</li>
+                        <li>PO creation for components</li>
+                        <li>Vendor allocation (BOI)</li>
+                        <li>Shop floor & Machine mgmt.</li>
+                        <li>Manufacturing tracking</li>
+                        <li>Assembly / Subassembly Prep</li>
+                        <li>Full Kit Readiness</li>
+                    </ul>
+                </div>
+                </div>
+            <div class="arrow arrow-8-9">➔</div>
+        </div>
+
+        <div class="card stage-9">
+            <div class="card-header">STAGE 9: QC Loop <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Quality Team</div>
+                    <ul class="names">
+                        <li>Inspection Handlers</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Inspection of complete assemblies & subassemblies based on BOM standards.<br><br>
+                    <span style="color:var(--yd-dark-red);">❌ If NOT approved → Sent back to Design & PM</span><br>
+                    <span style="color:var(--success-green);">✅ If approved → Move to Dispatch</span>
+                </div>
+            </div>
+            <div class="arrow arrow-9-10">➔</div>
+            
+            <div class="loop-path"></div>
+            <div class="loop-label">↻ Return Loop on Reject</div>
+        </div>
+
+        <div class="card stage-10">
+            <div class="card-header">STAGE 10: Dispatch <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Dispatch Team</div>
+                    <ul class="names">
+                        <li>Logistics Mgmt.</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Logistics operations finalization:<br><br>
+                    • Packing List Generation<br>
+                    • Transport Arrangement<br>
+                    • GRN Handling<br>
+                    • Final Physical Dispatch
+                </div>
+            </div>
+            <div class="arrow arrow-10-11">➔</div>
+        </div>
+
+        <div class="card stage-11" style="background: rgba(39, 174, 96, 0.05); border: 1px solid var(--success-green); box-shadow: inset 0 0 20px rgba(39, 174, 96, 0.05);">
+            <div class="card-header" style="color: var(--success-green); border-bottom: none; font-size: clamp(1rem, 1.4vw, 1.6rem);">STAGE 11: Finance Closure <span class="toggle-icon" style="color:var(--success-green);">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster" style="background: transparent; border-left-color: var(--success-green);">
+                    <div class="roster-title" style="color: var(--success-green);">Finance Team</div>
+                    <ul class="names">
+                        <li>Accounts & Billing</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    ✅ <strong>Project Lifecycle Success</strong><br><br>
+                    • Accounts Receivable Logged<br>
+                    • Final Payment Collection<br>
+                    • Financial Project Closure Complete
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <span class="footer-note"><strong>Note:</strong> Notifications are system-generated as per workflow. Relevant departments must take timely action.</span>
+    </footer>
+
+    <script>
+        // --- 1. DARK MODE TOGGLE ---
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if(document.body.classList.contains('dark-mode')){
+                themeToggle.innerHTML = '☀️ Light Mode';
+            } else {
+                themeToggle.innerHTML = '🌙 Dark Mode';
+            }
+        });
+
+        // --- 2. MOBILE TAP-TO-EXPAND (ACCORDION) ---
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const header = card.querySelector('.card-header');
+            if(header) {
+                header.addEventListener('click', () => {
+                    // Only active on mobile dimensions
+                    if (window.innerWidth <= 1024) {
+                        // Optional: Close other cards when one is clicked (Accordion style)
+                        cards.forEach(c => {
+                            if(c !== card) c.classList.remove('active');
+                        });
+                        // Toggle current card
+                        card.classList.toggle('active');
+                        
+                        // Scroll to the active card smoothly
+                        if(card.classList.contains('active')) {
+                            setTimeout(() => {
+                                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 300); // slight delay to allow CSS transition
+                        }
+                    }
+                });
+            }
+        });
+
+        // --- 3. LIVE SCROLL PROGRESS TRACKER (Mobile Only) ---
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth <= 1024) {
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const progress = (scrollTop / scrollHeight) * 100;
+                document.getElementById('progressBar').style.width = progress + '%';
+            }
+        });
+    </script>
+
+</body>
+</html>
