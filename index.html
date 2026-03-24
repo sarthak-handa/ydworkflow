@@ -36,6 +36,25 @@
             --info-bg: linear-gradient(135deg, rgba(30,35,40,0.9) 0%, rgba(20,24,28,0.9) 100%);
         }
 
+        /* === NAVIGATION BUTTON STYLE === */
+        .nav-btn {
+            background: var(--yd-light-grey);
+            border: 1px solid var(--yd-red);
+            border-radius: 20px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--yd-red);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: var(--yd-red);
+            color: white;
+        }
+
         /* === GLOBAL RESET & NO-SCROLL LOCK === */
         * {
             box-sizing: border-box;
@@ -548,7 +567,11 @@
     <header>
         <div class="logo-container">
             <img src="YDLOGO.png" alt="Yogi Ji Digi Logo" class="logo">
-            <button class="theme-switch" id="theme-toggle">🌙 Dark Mode</button>
+            
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="theme-switch" id="theme-toggle">🌙 Dark Mode</button>
+                <a href="execution.html" class="nav-btn">Next → Execution Flow</a>
+            </div>
         </div>
         <div class="title-box">
             <h1>Project Execution Workflow</h1>
@@ -692,9 +715,13 @@
                         <li>💻 Realisation Tool</li>
                     </ul>
                 </div>
-                <div class="action-text" style="text-align: center;">
+                <div class="action-text" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
                     ✅ <strong>Project Handover Complete</strong><br><br>
-                    Project starts running with its active planning mapped in the tool.
+                    Project starts running with its active planning mapped in the tool.<br>
+                    
+                    <a href="execution.html" class="nav-btn" style="margin-top:15px; align-self:center;">
+                        Continue to Execution →
+                    </a>
                 </div>
             </div>
         </div>
