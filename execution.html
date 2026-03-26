@@ -215,12 +215,18 @@
             z-index: 50;
         }
 
-        /* Delays */
+        /* Delays & Specific Stage Formatting */
         .stage-6 { animation-delay: 0.1s; border-top-color: var(--yd-red); }
-        .stage-7 { animation-delay: 0.2s; }
-        .stage-8 { animation-delay: 0.3s; border: 2px solid var(--yd-red); box-shadow: inset 0 0 15px rgba(175, 32, 45, 0.05); }
-        .stage-9 { animation-delay: 0.4s; }
-        .stage-10 { animation-delay: 0.5s; }
+        .stage-7 { animation-delay: 0.2s; border-top-color: var(--yd-grey); }
+        /* Stage 8 - The Approval Gate */
+        .stage-8 { 
+            animation-delay: 0.3s; 
+            border: 2px solid var(--yd-red); 
+            border-top: 5px solid var(--yd-red);
+            box-shadow: 0 0 15px rgba(175, 32, 45, 0.1); 
+        }
+        .stage-9 { animation-delay: 0.4s; border-top-color: var(--yd-grey); }
+        .stage-10 { animation-delay: 0.5s; border-top-color: var(--yd-grey); }
         .stage-11 { animation-delay: 0.6s; border-top-color: var(--success-green); }
 
         /* Typography Inside Cards */
@@ -296,6 +302,43 @@
         .action-text strong { color: var(--text-main); }
         .action-text ul { padding-left: 1vw; margin-top: 0.5vh; }
 
+        /* === SPLIT PARALLEL TRACKS (STAGE 9) === */
+        .parallel-split {
+            display: flex;
+            gap: 0.8vw;
+            flex-grow: 1;
+            margin-top: 0.5vh;
+        }
+        .split-track {
+            flex: 1;
+            background: rgba(90, 99, 96, 0.04);
+            border-radius: 6px;
+            padding: 0.8vh 0.6vw;
+            border-top: 3px solid var(--yd-grey);
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s;
+        }
+        .card:hover .split-track { border-top-color: var(--yd-red); }
+        
+        .track-title {
+            font-size: clamp(0.65rem, 0.75vw, 0.9rem);
+            color: var(--yd-red);
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px dashed rgba(175, 32, 45, 0.2);
+            padding-bottom: 0.3vh;
+            margin-bottom: 0.5vh;
+        }
+        .track-content {
+            font-size: clamp(0.65rem, 0.75vw, 0.9rem);
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+        .track-content ul { padding-left: 1vw; margin-top: 0.2vh; margin-bottom: 0; }
+        .track-content li { margin-bottom: 2px; }
+
         /* SLA Alert Boxes */
         .sla-box {
             margin-top: auto;
@@ -312,6 +355,59 @@
         .card:hover .sla-box {
             background: rgba(175, 32, 45, 0.1);
             animation: pulseAlert 2s infinite;
+        }
+
+        /* === EXCEL-LIKE GRID STYLING === */
+        .excel-grid-container {
+            overflow-x: auto;
+            margin-top: 1vh;
+            margin-bottom: 1vh;
+            border-radius: 4px;
+            border: 1px solid rgba(175, 32, 45, 0.2);
+        }
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(0.65rem, 0.75vw, 0.85rem);
+            background: rgba(255, 255, 255, 0.6);
+        }
+        body.dark-mode .excel-table {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .excel-table th, .excel-table td {
+            border: 1px solid rgba(90, 99, 96, 0.2);
+            padding: 3px 6px;
+            text-align: left;
+        }
+        .excel-table th {
+            background: rgba(175, 32, 45, 0.1);
+            color: var(--yd-red);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        body.dark-mode .excel-table th {
+            color: #ff8c94;
+            background: rgba(175, 32, 45, 0.2);
+        }
+        .excel-input {
+            width: 100%;
+            border: 1px solid rgba(90, 99, 96, 0.3);
+            background: #fff;
+            color: var(--text-main);
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: inherit;
+            transition: all 0.2s;
+        }
+        body.dark-mode .excel-input {
+            background: #1a1e21;
+            color: #e2e8f0;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .excel-input:focus {
+            outline: none;
+            border-color: var(--yd-red);
+            box-shadow: 0 0 3px rgba(175, 32, 45, 0.4);
         }
 
         /* === SYSTEM FOOTER NOTE === */
@@ -356,45 +452,6 @@
         .arrow-8-9 { top: 50%; right: -1vw; transform: translateY(-50%); }
         .arrow-9-10 { top: 50%; right: -1vw; transform: translateY(-50%); }
         .arrow-10-11 { bottom: -2vh; left: 50%; transform: translateX(-50%) rotate(90deg); animation: flowDown 2s infinite ease-in-out;}
-
-        /* Backward Iteration Loop Arrow */
-        .loop-path {
-            position: absolute;
-            bottom: -2.5vh;
-            right: 50%; /* Start exactly middle of Stage 9 */
-            width: calc(200% + 3vw); /* Span backwards exactly across 2 columns + 2 gaps */
-            height: 2vh;
-            border-bottom: 2px dashed var(--yd-red);
-            border-left: 2px dashed var(--yd-red);
-            border-right: 2px dashed var(--yd-red);
-            border-radius: 0 0 10px 10px;
-            z-index: 5;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        .loop-path::before {
-            content: "◄";
-            position: absolute;
-            left: -8px;
-            bottom: 3px;
-            color: var(--yd-red);
-            font-size: 1.2rem;
-            animation: pulseAlert 2s infinite;
-        }
-        .loop-label {
-            position: absolute;
-            bottom: -4.5vh;
-            right: 100%;
-            transform: translateX(50%);
-            font-size: clamp(0.6rem, 0.7vw, 0.8rem);
-            font-weight: 800;
-            color: var(--yd-red);
-            background: var(--header-bg);
-            padding: 2px 8px;
-            border-radius: 4px;
-            border: 1px dashed var(--yd-red);
-            z-index: 11;
-        }
 
         /* === KEYFRAMES === */
         @keyframes fadeUp {
@@ -483,12 +540,18 @@
             }
             
             .card.active .collapsible-content {
-                max-height: 600px; /* Increased to allow Stage 8 content space */
+                max-height: 1200px; /* Increased to allow content space including grid and splits */
                 opacity: 1;
                 margin-top: 1vh;
             }
             .card.active .toggle-icon {
                 transform: rotate(180deg);
+            }
+
+            /* Stack Parallel Splits on Mobile */
+            .parallel-split {
+                flex-direction: column;
+                gap: 1.5vh;
             }
 
             /* Remove complex grid placement */
@@ -497,8 +560,8 @@
                 grid-row: auto !important;
             }
 
-            /* Hide desktop arrows & branch labels */
-            .arrow, .loop-path, .loop-label { display: none; }
+            /* Hide desktop arrows */
+            .arrow { display: none; }
 
             /* Add simple vertical downward connector */
             .card::after {
@@ -519,6 +582,8 @@
                 height: auto;
                 padding: 15px 10px;
             }
+            
+            .excel-grid-container { margin-bottom: 10px; }
         }
 
         /* Mobile arrow animation */
@@ -551,8 +616,9 @@
     </header>
 
     <main>
+        
         <div class="card stage-6 active">
-            <div class="card-header">STAGE 6: Dispatch Schedule <span class="toggle-icon">▼</span></div>
+            <div class="card-header">STAGE 6: Planning <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Planning & Forecasting</div>
@@ -561,106 +627,128 @@
                     </ul>
                 </div>
                 <div class="action-text">
-                    Components are grouped into Subassemblies and Assemblies with:<br><br>
-                    <strong>• Dispatch Month</strong><br>
-                    <strong>• Tentative Billing Value</strong>
-                </div>
-                <div class="sla-box">
-                    ⏱️ SLA: <strong>7 Days</strong><br>
-                    ⚠️ Auto Escalate to: Mr. Navneet Singh & Mr. Sameer Bansal
+                    Assemblies created via Excel Input:<br><br>
+                    • <strong>Dispatch Month</strong> assigned<br>
+                    • <strong>Tentative Billing Value</strong> assigned<br>
+                    • <strong>Project Manager</strong> allocated
                 </div>
             </div>
             <div class="arrow arrow-6-7">➔</div>
         </div>
 
         <div class="card stage-7">
-            <div class="card-header">STAGE 7: BOM Freeze <span class="toggle-icon">▼</span></div>
+            <div class="card-header">STAGE 7: Design Planning <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Design Team</div>
                     <ul class="names">
-                        <li>Mr. SK Tripathi <span>(Director)</span></li>
-                        <li>Surajpal Singh <span>(Electrical)</span></li>
-                        <li>Sanjay N. & Krishna P. <span>(Mumbai)</span></li>
-                        <li>Vinit J, Smith K, Brijraj <span>(Mech)</span></li>
+                        <li>Design Lead</li>
                     </ul>
                 </div>
-                <div class="action-text">
-                    Design converts commercial structure into technical structure and releases BOM to PM, including:
-                    <ul>
-                        <li>Drawing Number</li>
-                        <li>Quantity & Material</li>
-                        <li>Weight Parameters</li>
-                    </ul>
+                <div class="action-text" style="flex-grow: 0; margin-bottom: 5px;">
+                    Technical structure mapping. Design team fills Delivery Schedule.
                 </div>
-                <div class="sla-box">
-                    ⏱️ SLA: <strong>10 Days</strong><br>
-                    ⚠️ Auto Escalate to: Mr. Navneet Singh & Mr. Sameer Bansal
+                
+                <div class="excel-grid-container">
+                    <table class="excel-table">
+                        <thead>
+                            <tr>
+                                <th>Assembly</th>
+                                <th>Delivery Date</th>
+                                <th>Days</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Main Frame</td>
+                                <td><input type="date" class="excel-input"></td>
+                                <td><input type="number" class="excel-input" placeholder="Days"></td>
+                            </tr>
+                            <tr>
+                                <td>Drive Unit</td>
+                                <td><input type="date" class="excel-input"></td>
+                                <td><input type="number" class="excel-input" placeholder="Days"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="arrow arrow-7-8">➔</div>
         </div>
 
         <div class="card stage-8">
-            <div class="card-header" style="background:var(--yd-red); color:white; padding: 0.5vh 1vh; border-radius:6px;">STAGE 8: Execution <span class="toggle-icon" style="color:white;">▼</span></div>
+            <div class="card-header" style="color:var(--yd-red);">STAGE 8: Approval Gate <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
-                    <div class="roster-title">Execution Floor</div>
+                    <div class="roster-title">Review & Sign-Off</div>
                     <ul class="names">
-                        <li>Project Manager <span>(Allocated)</span></li>
+                        <li>COO / VP</li>
                     </ul>
                 </div>
                 <div class="action-text">
-                    <strong>Heavy Execution Phase:</strong>
-                    <ul>
-                        <li>Procurement (BOI / In-House)</li>
-                        <li>PO creation for components</li>
-                        <li>Vendor allocation (BOI)</li>
-                        <li>Shop floor & Machine mgmt.</li>
-                        <li>Manufacturing tracking</li>
-                        <li>Assembly / Subassembly Prep</li>
-                        <li>Full Kit Readiness</li>
-                    </ul>
+                    Review tentative design delivery dates.<br><br>
+                    • Can modify dates<br>
+                    • Once approved ➔ <strong>LOCKED</strong><br><br>
+                    <em>Unlocks Phase 2 (Parallel Execution)</em>
                 </div>
+                <div class="sla-box">
+                    ⏱️ SLA: <strong>2 Days</strong><br>
+                    ⚠️ Escalate: Mr. Navneet Singh
                 </div>
+            </div>
             <div class="arrow arrow-8-9">➔</div>
         </div>
 
         <div class="card stage-9">
-            <div class="card-header">STAGE 9: QC Loop <span class="toggle-icon">▼</span></div>
+            <div class="card-header">STAGE 9: Execution (Parallel) <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
-                <div class="roster">
-                    <div class="roster-title">Quality Team</div>
-                    <ul class="names">
-                        <li>Inspection Handlers</li>
-                    </ul>
+                
+                <div class="parallel-split">
+                    <div class="split-track">
+                        <div class="track-title">Track A: Design</div>
+                        <div class="track-content">
+                            <strong>Continuous Flow:</strong><br>
+                            • Upload Drawings<br>
+                            • Add BOM details:<br>
+                            <ul>
+                                <li>Drawing No.</li>
+                                <li>Qty & Material</li>
+                                <li>Weight</li>
+                                <li>Vendor Name</li>
+                                <li>PO Number & Price</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="split-track">
+                        <div class="track-title">Track B: Proj. Mgr</div>
+                        <div class="track-content">
+                            <strong>Execution Flow:</strong><br>
+                            • Procurement Mgmt<br>
+                            • Vendor Allocation<br>
+                            • Manufacturing Tracking<br>
+                            • Assembly Execution
+                        </div>
+                    </div>
                 </div>
-                <div class="action-text">
-                    Inspection of complete assemblies & subassemblies based on BOM standards.<br><br>
-                    <span style="color:var(--yd-dark-red);">❌ If NOT approved → Sent back to Design & PM</span><br>
-                    <span style="color:var(--success-green);">✅ If approved → Move to Dispatch</span>
-                </div>
+
             </div>
             <div class="arrow arrow-9-10">➔</div>
-            
-            <div class="loop-path"></div>
-            <div class="loop-label">↻ Return Loop on Reject</div>
         </div>
 
         <div class="card stage-10">
             <div class="card-header">STAGE 10: Dispatch <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
-                    <div class="roster-title">Dispatch Team</div>
+                    <div class="roster-title">Logistics Team</div>
                     <ul class="names">
-                        <li>Logistics Mgmt.</li>
+                        <li>Dispatch Handlers</li>
                     </ul>
                 </div>
                 <div class="action-text">
-                    Logistics operations finalization:<br><br>
-                    • Packing List Generation<br>
+                    Physical movement and logistics completion.<br><br>
+                    • Packing List Gen.<br>
                     • Transport Arrangement<br>
-                    • GRN Handling<br>
                     • Final Physical Dispatch
                 </div>
             </div>
@@ -668,7 +756,7 @@
         </div>
 
         <div class="card stage-11" style="background: rgba(39, 174, 96, 0.05); border: 1px solid var(--success-green); box-shadow: inset 0 0 20px rgba(39, 174, 96, 0.05);">
-            <div class="card-header" style="color: var(--success-green); border-bottom: none; font-size: clamp(1rem, 1.4vw, 1.6rem);">STAGE 11: Finance Closure <span class="toggle-icon" style="color:var(--success-green);">▼</span></div>
+            <div class="card-header" style="color: var(--success-green); border-bottom: none;">STAGE 11: Finance Closure <span class="toggle-icon" style="color:var(--success-green);">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster" style="background: transparent; border-left-color: var(--success-green);">
                     <div class="roster-title" style="color: var(--success-green);">Finance Team</div>
