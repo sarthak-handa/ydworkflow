@@ -1,1395 +1,745 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Project Realization Panel | YOGIJI DIGI</title>
-    
-    <link href="assets/img/yd-favicon.png" rel="icon" />
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YOGIJI DIGI - Project Execution Workflow – Execution & Closure</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="yd-favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="yd-favicon.png">
+    <link rel="apple-touch-icon" href="yd-favicon.png">
     <style>
-      :root {
-        --yd-primary: #2a5071; 
-        --yd-red: #ad283f;      
-        --yd-bg: #f5f7fa;
-      }
-      
-      body {
-        background: url('ydbg.jpeg') no-repeat center center fixed;
-        background-size: cover;
-        font-family: "Open Sans", system-ui, sans-serif;
-        color: #444444;
-      }
+        /* === YOGI JI DIGI CORPORATE PALETTE === */
+        :root {
+            --yd-red: #AF202D;        /* Exact Logo Red */
+            --yd-dark-red: #821520;
+            --yd-grey: #5A6360;       /* Exact Logo Grey */
+            --yd-light-grey: #f4f6f8;
+            --bg-gradient: radial-gradient(circle at top right, #ffffff, #e3e8ec);
+            --grid-color: rgba(90, 99, 96, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.75); /* Futuristic Glass */
+            --text-main: #2c3e50;
+            --text-muted: #546e7a;
+            --success-green: #27ae60;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --info-bg: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(244,246,248,0.9) 100%);
+        }
 
-      /* --- HEADER STYLING --- */
-      .header {
-        transition: all 0.5s;
-        z-index: 997;
-        padding: 15px;
-        background-color: #ffffff;
-        box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
-      }
-      .logo img {
-        max-height: 40px;
-        margin-right: 6px;
-      }
-      .btn-getstarted {
-        color: var(--yd-primary);
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-      }
+        /* === DARK MODE PALETTE === */
+        body.dark-mode {
+            --yd-light-grey: #2d3748;
+            --bg-gradient: radial-gradient(circle at top right, #1a1e21, #0d1113);
+            --grid-color: rgba(255, 255, 255, 0.03);
+            --card-bg: rgba(30, 35, 40, 0.85);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --header-bg: rgba(20, 24, 28, 0.9);
+            --info-bg: linear-gradient(135deg, rgba(30,35,40,0.9) 0%, rgba(20,24,28,0.9) 100%);
+        }
 
-      /* --- MAIN CONTENT --- */
-      .main {
-        margin-top: 80px; 
-        padding: 20px 0;
-        min-height: 80vh;
-      }
+        /* === GLOBAL RESET & NO-SCROLL LOCK === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-      .table-container {
-        background: #fffffff0;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
-        backdrop-filter: blur(5px);
-      }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* STRICT NO SCROLLING ON DESKTOP */
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
 
-      h2.page-title {
-        color: var(--yd-red);
-        font-weight: 700;
-        font-family: "Nunito", sans-serif;
-      }
+        /* Futuristic Background animated grid */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 3vw 3vw;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+            transition: background-image 0.4s ease;
+        }
 
-      /* --- BADGES & STATUS COLORS --- */
-      .badge-sla-green { background-color: #198754; color: white; }
-      .badge-sla-amber { background-color: #ffc107; color: #000; }
-      .badge-sla-red { background-color: #dc3545; color: white; animation: pulse-red 2s infinite; }
-      
-      .status-badge { font-size: 0.8rem; padding: 6px 10px; }
-      
-      .bg-stage-0 { background-color: #6c757d; color: #fff; } 
-      .bg-stage-1 { background-color: #ffc107; color: #000; } 
-      .bg-stage-2 { background-color: #0dcaf0; color: #000; } 
-      .bg-stage-3 { background-color: #0d6efd; color: #fff; } 
-      .bg-stage-4 { background-color: #6f42c1; color: #fff; } 
-      .bg-stage-5 { background-color: #198754; color: #fff; } 
-      .bg-stage-blocked { background-color: #dc3545; color: #fff; }
+        /* === HEADER === */
+        header {
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3vw;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--yd-red);
+            box-shadow: 0 4px 15px rgba(175, 32, 45, 0.1);
+            z-index: 100;
+            transition: background 0.4s ease;
+        }
 
-      .legend-item { font-size: 0.8rem; margin-right: 15px; color: #666; }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-      @keyframes pulse-red {
-          0% { opacity: 1; }
-          50% { opacity: 0.7; }
-          100% { opacity: 1; }
-      }
+        .logo {
+            height: 7vh;
+            max-width: 250px;
+            object-fit: contain;
+            animation: slideInLeft 1s ease-out;
+            cursor: pointer;
+            transition: transform 0.3s, filter 0.4s;
+        }
+        .logo:hover { transform: scale(1.05); }
+        body.dark-mode .logo { filter: brightness(0) invert(1) opacity(0.9); }
 
-      /* --- DATATABLES OVERRIDES --- */
-      table.dataTable thead th {
-        background-color: var(--yd-primary);
-        color: white;
-        font-weight: 600;
-        font-size: 0.9rem;
-        vertical-align: middle;
-      }
-      table.dataTable tbody td {
-        vertical-align: middle;
-        font-size: 0.9rem;
-      }
-      table.dataTable tbody tr { cursor: pointer; }
-      table.dataTable tbody tr:hover { background-color: #f1f4f9 !important; }
+        /* Dark Mode & Navigation Switches */
+        .controls-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .theme-switch, .nav-btn {
+            background: var(--yd-light-grey);
+            border: 1px solid var(--yd-grey);
+            border-radius: 20px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .nav-btn {
+            border-color: var(--yd-red);
+            color: var(--yd-red);
+            background: rgba(175, 32, 45, 0.05);
+        }
+        .theme-switch:hover {
+            border-color: var(--yd-red);
+            color: var(--yd-red);
+        }
+        .nav-btn:hover {
+            background: var(--yd-red);
+            color: white;
+        }
+        body.dark-mode .nav-btn { color: #ff8c94; border-color: #ff8c94; }
+        body.dark-mode .nav-btn:hover { background: #ff8c94; color: #1a1e21; }
 
-      /* --- MODALS --- */
-      .modal-header { border-bottom: 2px solid var(--yd-primary); }
-      .modal-title { color: var(--yd-primary); font-weight: 700; }
-      .form-label { font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 2px; }
-      .form-control, .form-select { font-size: 0.9rem; }
-      .audit-log { max-height: 150px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6; }
-      .audit-item { font-size: 0.75rem; border-left: 3px solid var(--yd-primary); padding-left: 10px; margin-bottom: 6px; }
+        .title-box { text-align: right; }
+        .title-box h1 {
+            font-size: clamp(1.1rem, 1.6vw, 2.2rem);
+            color: var(--yd-red);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.2vh;
+        }
+        .title-box p {
+            font-size: clamp(0.85rem, 1vw, 1.2rem);
+            color: var(--yd-grey);
+            font-weight: 600;
+        }
 
-      /* --- COMPACT TIMELINE WIZARD CSS --- */
-      .step-wizard-list {
-          display: flex;
-          list-style: none;
-          padding: 10px 0;
-          position: relative;
-          z-index: 10;
-          justify-content: space-between;
-          margin-bottom: 10px;
-      }
-      .step-wizard-item {
-          padding: 0 2px;
-          flex-basis: 0;
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1;
-          max-width: 100%;
-          display: flex;
-          flex-direction: column;
-          text-align: center;
-          min-width: 50px; 
-          position: relative;
-      }
-      .step-wizard-item + .step-wizard-item:after {
-          content: "";
-          position: absolute;
-          left: 0;
-          top: 10px; 
-          background: #e9ecef;
-          width: 100%;
-          height: 2px;
-          transform: translateX(-50%);
-          z-index: -1;
-          transition: background 0.3s ease;
-      }
-      .progress-count {
-          height: 20px;
-          width: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          font-weight: 600;
-          margin: 0 auto;
-          position: relative;
-          z-index: 10;
-          color: #999;
-          background-color: #e9ecef;
-          font-size: 10px; 
-          transition: all 0.3s ease;
-      }
-      .step-wizard-item.completed-item .progress-count {
-          background-color: #198754; 
-          color: #fff;
-      }
-      .step-wizard-item.completed-item + .step-wizard-item:after {
-          background-color: #198754;
-      }
-      .progress-label {
-          font-size: 9px; 
-          font-weight: 700;
-          margin-top: 5px;
-          color: #999;
-          text-transform: uppercase;
-          line-height: 1.1;
-      }
-      .step-wizard-item.completed-item .progress-label {
-          color: #198754;
-      }
+        /* === PROGRESS INDICATOR (Hidden on Desktop) === */
+        .progress-container {
+            display: none;
+            width: 100%;
+            height: 4px;
+            background: var(--yd-light-grey);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--yd-red);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
 
-      /* --- FOOTER --- */
-      .footer { background: #f1f1f1; padding: 30px 0; font-size: 14px; margin-top: auto; }
-      .footer h4 { font-size: 16px; font-weight: bold; color: var(--yd-primary); padding-bottom: 12px; }
-      .footer ul { list-style: none; padding: 0; }
-      .footer ul li { padding: 8px 0; }
-      .footer ul li a { color: #6c757d; text-decoration: none; transition: 0.3s; }
-      .footer ul li a:hover { color: var(--yd-primary); }
-      .copyright { padding-top: 25px; border-top: 1px solid #d1d7dc; color: var(--yd-primary); }
+        /* === MAIN GRID LAYOUT (Page 2 Mapping) === */
+        main {
+            flex: 1;
+            padding: 1.5vh 2vw;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: 1fr 1fr;
+            gap: 1.5vh 1.5vw;
+            position: relative;
+        }
+
+        /* Grid Areas Mapping */
+        .stage-6 { grid-column: 1; grid-row: 1; }
+        .stage-7 { grid-column: 2; grid-row: 1; }
+        .stage-8 { grid-column: 3; grid-row: 1; }
+        .stage-9 { grid-column: 4; grid-row: 1; }
+        .stage-10 { grid-column: 5; grid-row: 1; }
+        .stage-11 { grid-column: 5; grid-row: 2; }
+
+        /* === CARD STYLING === */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(175, 32, 45, 0.2);
+            border-top: 4px solid var(--yd-grey);
+            border-radius: 12px;
+            padding: 1.2vh 1vw;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            position: relative;
+            cursor: default;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s, border 0.4s;
+            opacity: 0;
+            animation: fadeUp 0.8s forwards;
+        }
+
+        .card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(175, 32, 45, 0.15);
+            border-color: var(--yd-red);
+            border-top-color: var(--yd-red);
+            z-index: 50;
+        }
+
+        /* Delays */
+        .stage-6 { animation-delay: 0.1s; border-top-color: var(--yd-red); }
+        .stage-7 { animation-delay: 0.2s; }
+        .stage-8 { animation-delay: 0.3s; border: 2px solid var(--yd-red); box-shadow: inset 0 0 15px rgba(175, 32, 45, 0.05); }
+        .stage-9 { animation-delay: 0.4s; }
+        .stage-10 { animation-delay: 0.5s; }
+        .stage-11 { animation-delay: 0.6s; border-top-color: var(--success-green); }
+
+        /* Typography Inside Cards */
+        .card-header {
+            font-size: clamp(0.9rem, 1.1vw, 1.3rem);
+            font-weight: 800;
+            color: var(--yd-red);
+            border-bottom: 1px solid rgba(175, 32, 45, 0.2);
+            padding-bottom: 0.5vh;
+            margin-bottom: 0.8vh;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .toggle-icon { display: none; font-size: 1rem; color: var(--yd-red); transition: transform 0.3s; }
+
+        .collapsible-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .roster {
+            background: rgba(128, 128, 128, 0.08);
+            padding: 0.8vh 0.6vw;
+            border-radius: 6px;
+            margin-bottom: 0.8vh;
+            border-left: 3px solid var(--yd-grey);
+            transition: border-color 0.3s;
+        }
+        .card:hover .roster { border-left-color: var(--yd-red); }
+
+        .roster-title {
+            font-size: clamp(0.75rem, 0.9vw, 1rem);
+            color: var(--yd-grey);
+            font-weight: 700;
+            margin-bottom: 0.3vh;
+            text-transform: uppercase;
+        }
+
+        .names {
+            list-style: none;
+            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .names li {
+            transition: transform 0.2s ease, color 0.2s ease;
+            cursor: pointer;
+        }
+        .names li:hover {
+            transform: translateX(4px);
+            color: var(--yd-red);
+        }
+
+        .names span {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        .action-text {
+            font-size: clamp(0.7rem, 0.85vw, 1rem);
+            color: var(--text-muted);
+            line-height: 1.3;
+            flex-grow: 1;
+        }
+        .action-text strong { color: var(--text-main); }
+        .action-text ul { padding-left: 1vw; margin-top: 0.5vh; }
+
+        /* SLA Alert Boxes */
+        .sla-box {
+            margin-top: auto;
+            background: rgba(175, 32, 45, 0.05);
+            border: 1px dashed var(--yd-red);
+            padding: 0.6vh 0.8vw;
+            border-radius: 6px;
+            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
+            color: var(--yd-dark-red);
+            transition: background 0.3s;
+        }
+        body.dark-mode .sla-box { color: #ff8c94; background: rgba(175, 32, 45, 0.15); }
+        
+        .card:hover .sla-box {
+            background: rgba(175, 32, 45, 0.1);
+            animation: pulseAlert 2s infinite;
+        }
+
+        /* === SYSTEM FOOTER NOTE === */
+        footer {
+            height: 4vh;
+            background: var(--yd-grey);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.7rem, 0.85vw, 1rem);
+            letter-spacing: 0.5px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--yd-red);
+            box-shadow: 0 0 10px var(--yd-red);
+        }
+        .footer-note { font-weight: 400; text-align: center; padding: 0 10px; }
+        .footer-note strong { font-weight: 700; color: #ffcccc; }
+
+        /* === ANIMATED FLOW ARROWS (Desktop) === */
+        .arrow {
+            position: absolute;
+            color: var(--yd-red);
+            font-size: clamp(1.5rem, 2vw, 2.5rem);
+            z-index: 10;
+            animation: flowMove 2s infinite ease-in-out;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(175, 32, 45, 0.4);
+        }
+
+        .arrow-6-7 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-7-8 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-8-9 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-9-10 { top: 50%; right: -1vw; transform: translateY(-50%); }
+        .arrow-10-11 { bottom: -2vh; left: 50%; transform: translateX(-50%) rotate(90deg); animation: flowDown 2s infinite ease-in-out;}
+
+        /* Backward Iteration Loop Arrow */
+        .loop-path {
+            position: absolute;
+            bottom: -2.5vh;
+            right: 50%; /* Start exactly middle of Stage 9 */
+            width: calc(200% + 3vw); /* Span backwards exactly across 2 columns + 2 gaps */
+            height: 2vh;
+            border-bottom: 2px dashed var(--yd-red);
+            border-left: 2px dashed var(--yd-red);
+            border-right: 2px dashed var(--yd-red);
+            border-radius: 0 0 10px 10px;
+            z-index: 5;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .loop-path::before {
+            content: "◄";
+            position: absolute;
+            left: -8px;
+            bottom: 3px;
+            color: var(--yd-red);
+            font-size: 1.2rem;
+            animation: pulseAlert 2s infinite;
+        }
+        .loop-label {
+            position: absolute;
+            bottom: -4.5vh;
+            right: 100%;
+            transform: translateX(50%);
+            font-size: clamp(0.6rem, 0.7vw, 0.8rem);
+            font-weight: 800;
+            color: var(--yd-red);
+            background: var(--header-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px dashed var(--yd-red);
+            z-index: 11;
+        }
+
+        /* === KEYFRAMES === */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseAlert {
+            0% { box-shadow: 0 0 0 0 rgba(175, 32, 45, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(175, 32, 45, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(175, 32, 45, 0); }
+        }
+        @keyframes flowMove {
+            0% { transform: translate(0, -50%); opacity: 0.6; }
+            50% { transform: translate(6px, -50%); opacity: 1; text-shadow: 0 0 10px var(--yd-red);}
+            100% { transform: translate(0, -50%); opacity: 0.6; }
+        }
+        @keyframes flowDown {
+            0% { transform: translate(-50%, 0) rotate(90deg); opacity: 0.6; }
+            50% { transform: translate(-50%, 6px) rotate(90deg); opacity: 1; text-shadow: 0 0 10px var(--yd-red);}
+            100% { transform: translate(-50%, 0) rotate(90deg); opacity: 0.6; }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 3vw 3vw; }
+        }
+
+        /* ============================= */
+        /* 📱 MOBILE RESPONSIVE MODE     */
+        /* ============================= */
+        @media (max-width: 1024px) {
+
+            body {
+                height: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .progress-container { display: block; }
+
+            header {
+                height: auto;
+                flex-direction: column;
+                padding: 1rem;
+                text-align: center;
+                gap: 15px;
+                position: relative;
+            }
+            .logo-container {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            .controls-group { width: 100%; justify-content: center; }
+            .logo { height: 50px; }
+            .title-box { text-align: center; }
+
+            /* App-like Swipe Snapping */
+            main {
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+                padding: 20px;
+                scroll-snap-type: y mandatory;
+            }
+
+            .card {
+                width: 100%;
+                min-height: auto;
+                animation: fadeUp 0.6s forwards;
+                scroll-snap-align: start;
+                scroll-margin-top: 20px;
+            }
+
+            /* Tap to expand accordion logic */
+            .toggle-icon { display: block; }
+            .card-header { cursor: pointer; user-select: none; margin-bottom: 0; padding-bottom: 0.8vh;}
+            
+            .collapsible-content {
+                max-height: 0;
+                opacity: 0;
+                margin-top: 0;
+            }
+            
+            .card.active .collapsible-content {
+                max-height: 600px; /* Increased to allow Stage 8 content space */
+                opacity: 1;
+                margin-top: 1vh;
+            }
+            .card.active .toggle-icon {
+                transform: rotate(180deg);
+            }
+
+            /* Remove complex grid placement */
+            .stage-6, .stage-7, .stage-8, .stage-9, .stage-10, .stage-11 {
+                grid-column: auto !important;
+                grid-row: auto !important;
+            }
+
+            /* Hide desktop arrows & branch labels */
+            .arrow, .loop-path, .loop-label { display: none; }
+
+            /* Add simple vertical downward connector */
+            .card::after {
+                content: "⬇";
+                position: absolute;
+                bottom: -22px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 20px;
+                color: var(--yd-red);
+                animation: flowDownMobile 1.5s infinite ease-in-out;
+            }
+
+            /* Remove arrow after the last element */
+            .stage-11::after { display: none; }
+
+            footer {
+                height: auto;
+                padding: 15px 10px;
+            }
+        }
+
+        /* Mobile arrow animation */
+        @keyframes flowDownMobile {
+            0% { transform: translate(-50%, 0); opacity: 0.6; }
+            50% { transform: translate(-50%, 6px); opacity: 1; text-shadow: 0 0 8px var(--yd-red);}
+            100% { transform: translate(-50%, 0); opacity: 0.6; }
+        }
+
     </style>
-  </head>
+</head>
+<body>
 
-  <body>
-    
-    <header id="header" class="header d-flex align-items-center sticky-top" style="padding: 15px">
-      <ul class="container-fluid position-relative d-flex align-items-center gap-3" style="margin-bottom: 0px; padding-left: 1rem; padding-right: 1rem;">
-        <a href="#" class="logo d-flex align-items-center me-auto text-decoration-none">
-          <img src="YDLOGO.png" alt="YD" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x40?text=YD+LOGO';">
-        </a>
-        
-        <a href="#" class="position-relative d-inline-block btn btn-sm" style="background: #fde2e4; color: #9f1239; font-weight:600">Report</a>
-        <a href="#" class="position-relative d-inline-block btn btn-sm" style="background: #fff4cc; color: #92400e; font-weight:600">Meeting</a>
-        <a href="#" class="position-relative d-inline-block btn btn-sm" style="background: #e0f2fe; color: #0369a1; font-weight:600">Attendance</a>
-        
-        <a href="#" class="position-relative d-inline-block ms-2">
-          <i class="fa-solid fa-bell text-primary fs-5"></i>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; padding: 3px 6px">3</span>
-        </a>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
-        <div class="dropdown ms-2">
-            <a class="btn-getstarted d-flex align-items-center dropdown-toggle text-decoration-none" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-circle-user fs-4 me-2"></i>
-                <span id="userRoleDisplay">Sashikanth (Sales)</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><h6 class="dropdown-header">Role Simulator</h6></li>
-                <li><button class="dropdown-item" onclick="app.switchRole('SALES')">Sales (Sashikanth)</button></li>
-                <li><button class="dropdown-item" onclick="app.switchRole('PLANNING')">Planning (Shivendu)</button></li>
-                <li><button class="dropdown-item" onclick="app.switchRole('DESIGN')">Design (Engineering Team)</button></li>
-                <li><button class="dropdown-item" onclick="app.switchRole('VP')">COO/VP (Varun/Aseem)</button></li>
-                <li><button class="dropdown-item" onclick="app.switchRole('PM')">PM (Aditya/Saurabh)</button></li>
-                <li><button class="dropdown-item" onclick="app.switchRole('DIRECTOR')">Director (Navneet/Sameer)</button></li>
-                <li><button class="dropdown-item" onclick="app.switchRole('FINANCE')">Finance (Anup/Manish)</button></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><button class="dropdown-item text-danger" onclick="app.resetData()"><i class="fa fa-refresh me-2"></i>Reset Demo</button></li>
-            </ul>
+    <header>
+        <div class="logo-container">
+            <img src="YDLOGO.png" alt="Yogi Ji Digi Logo" class="logo">
+            <div class="controls-group">
+                <button class="theme-switch" id="theme-toggle">🌙 Dark Mode</button>
+                <a href="index.html" class="nav-btn">← Back to Initiation Flow</a>
+            </div>
         </div>
-      </ul>
+        <div class="title-box">
+            <h1>Project Execution Workflow</h1>
+            <p>Execution & Closure</p>
+        </div>
     </header>
 
-    <main class="main">
-      <div class="container table-container">
-        
-        <div class="row align-items-center mb-4">
-            <div class="col-md-6">
-                <h2 class="page-title mb-0">Project Realization Engine</h2>
-                <p class="text-muted small mb-0">Governance: Sales <i class="fa fa-arrow-right mx-1"></i> Finance/VP <i class="fa fa-arrow-right mx-1"></i> PM <i class="fa fa-arrow-right mx-1"></i> Planning <i class="fa fa-arrow-right mx-1"></i> Design <i class="fa fa-arrow-right mx-1"></i> VP Approval</p>
-                <div class="mt-2">
-                    <span class="legend-item"><i class="fa fa-envelope text-primary"></i> Email Trigger</span>
-                    <span class="legend-item"><i class="fa fa-whatsapp text-success"></i> WhatsApp Escalation</span>
-                    <span class="legend-item"><i class="fa fa-ban text-danger"></i> System Block</span>
+    <main>
+        <div class="card stage-6 active">
+            <div class="card-header">STAGE 6: Dispatch Schedule <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Planning & Forecasting</div>
+                    <ul class="names">
+                        <li>Mr. Shivendu Sharma</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Components are grouped into Subassemblies and Assemblies with:<br><br>
+                    <strong>• Dispatch Month</strong><br>
+                    <strong>• Tentative Billing Value</strong>
+                </div>
+                <div class="sla-box">
+                    ⏱️ SLA: <strong>7 Days</strong><br>
+                    ⚠️ Auto Escalate to: Mr. Navneet Singh & Mr. Sameer Bansal
                 </div>
             </div>
-            <div class="col-md-6 text-end">
-                <div class="d-flex gap-2 justify-content-end align-items-center">
-                    <button class="btn btn-outline-danger btn-sm" onclick="app.exportPDF()">
-                        <i class="fa-solid fa-file-pdf me-1"></i> Export PDF
-                    </button>
+            <div class="arrow arrow-6-7">➔</div>
+        </div>
 
-                    <button class="btn btn-primary btn-sm" id="btnNewProject" onclick="app.openCreateModal()" style="display: none;">
-                        <i class="fa fa-plus me-1"></i> Initiate New Project
-                    </button>
+        <div class="card stage-7">
+            <div class="card-header">STAGE 7: BOM Freeze <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Design Team</div>
+                    <ul class="names">
+                        <li>Mr. SK Tripathi <span>(Director)</span></li>
+                        <li>Surajpal Singh <span>(Electrical)</span></li>
+                        <li>Sanjay N. & Krishna P. <span>(Mumbai)</span></li>
+                        <li>Vinit J, Smith K, Brijraj <span>(Mech)</span></li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Design converts commercial structure into technical structure and releases BOM to PM, including:
+                    <ul>
+                        <li>Drawing Number</li>
+                        <li>Quantity & Material</li>
+                        <li>Weight Parameters</li>
+                    </ul>
+                </div>
+                <div class="sla-box">
+                    ⏱️ SLA: <strong>10 Days</strong><br>
+                    ⚠️ Auto Escalate to: Mr. Navneet Singh & Mr. Sameer Bansal
+                </div>
+            </div>
+            <div class="arrow arrow-7-8">➔</div>
+        </div>
+
+        <div class="card stage-8">
+            <div class="card-header" style="background:var(--yd-red); color:white; padding: 0.5vh 1vh; border-radius:6px;">STAGE 8: Execution <span class="toggle-icon" style="color:white;">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Execution Floor</div>
+                    <ul class="names">
+                        <li>Project Manager <span>(Allocated)</span></li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    <strong>Heavy Execution Phase:</strong>
+                    <ul>
+                        <li>Procurement (BOI / In-House)</li>
+                        <li>PO creation for components</li>
+                        <li>Vendor allocation (BOI)</li>
+                        <li>Shop floor & Machine mgmt.</li>
+                        <li>Manufacturing tracking</li>
+                        <li>Assembly / Subassembly Prep</li>
+                        <li>Full Kit Readiness</li>
+                    </ul>
+                </div>
+                </div>
+            <div class="arrow arrow-8-9">➔</div>
+        </div>
+
+        <div class="card stage-9">
+            <div class="card-header">STAGE 9: QC Loop <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Quality Team</div>
+                    <ul class="names">
+                        <li>Inspection Handlers</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Inspection of complete assemblies & subassemblies based on BOM standards.<br><br>
+                    <span style="color:var(--yd-dark-red);">❌ If NOT approved → Sent back to Design & PM</span><br>
+                    <span style="color:var(--success-green);">✅ If approved → Move to Dispatch</span>
+                </div>
+            </div>
+            <div class="arrow arrow-9-10">➔</div>
+            
+            <div class="loop-path"></div>
+            <div class="loop-label">↻ Return Loop on Reject</div>
+        </div>
+
+        <div class="card stage-10">
+            <div class="card-header">STAGE 10: Dispatch <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Dispatch Team</div>
+                    <ul class="names">
+                        <li>Logistics Mgmt.</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Logistics operations finalization:<br><br>
+                    • Packing List Generation<br>
+                    • Transport Arrangement<br>
+                    • GRN Handling<br>
+                    • Final Physical Dispatch
+                </div>
+            </div>
+            <div class="arrow arrow-10-11">➔</div>
+        </div>
+
+        <div class="card stage-11" style="background: rgba(39, 174, 96, 0.05); border: 1px solid var(--success-green); box-shadow: inset 0 0 20px rgba(39, 174, 96, 0.05);">
+            <div class="card-header" style="color: var(--success-green); border-bottom: none; font-size: clamp(1rem, 1.4vw, 1.6rem);">STAGE 11: Finance Closure <span class="toggle-icon" style="color:var(--success-green);">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster" style="background: transparent; border-left-color: var(--success-green);">
+                    <div class="roster-title" style="color: var(--success-green);">Finance Team</div>
+                    <ul class="names">
+                        <li>Accounts & Billing</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    ✅ <strong>Project Lifecycle Success</strong><br><br>
+                    • Accounts Receivable Logged<br>
+                    • Final Payment Collection<br>
+                    • Financial Project Closure Complete
                 </div>
             </div>
         </div>
 
-        <table id="kickoffTable" class="table table-hover table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th style="width: 10%">SLA</th>
-                    <th style="width: 15%">Project No.</th>
-                    <th style="width: 25%">Client & Site</th>
-                    <th style="width: 20%">Stage</th>
-                    <th style="width: 15%">Owner</th>
-                    <th style="width: 15%">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                </tbody>
-        </table>
-      </div>
     </main>
 
-    <footer id="footer" class="footer position-relative light-background">
-      <div class="container-fluid footer-top">
-        <div class="row gy-4" style="padding-left: 50px">
-          <div class="col-lg-3 col-md-3 footer-about">
-            <a href="#" class="logo d-flex align-items-center">
-              <img height="100" src="yd-footer.png" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x60?text=YD+Footer';">
-            </a>
-          </div>
-          <div class="col-lg-3 col-md-3 footer-links">
-            <h4>Products</h4>
-            <ul>
-              <li><a href="#">Cold Rolling Mills</a></li>
-              <li><a href="#">GI/GL Lines</a></li>
-              <li><a href="#">Color Coating lines</a></li>
-              <li><a href="#">Pickling Lines & Acid Regeneration</a></li>
-              <li><a href="#">Electrical & Automation Solutions</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-3 footer-links footer-right" style="padding-left: 90px">
-            <h4>Information</h4>
-            <ul>
-              <li><a href="#">Company Profile</a></li>
-              <li><a href="#">Infrastructure</a></li>
-              <li><a href="#">Contact Us</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-3 footer-links footer-right" style="padding-left: 70px">
-            <h4>Get In Touch</h4>
-            <ul>
-              <li><a href="#">147-148, Sector - 58</a></li>
-              <li><a href="#">Faridabad 121004</a></li>
-              <li><a href="#">Haryana, India</a></li>
-              <li><a href="mailto:sales@ydgroup.com">sales@ydgroup.com</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="container copyright text-center">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">YOGIJI DIGI</strong> <span>All Rights Reserved</span></p>
-      </div>
+    <footer>
+        <span class="footer-note"><strong>Note:</strong> Notifications are system-generated as per workflow. Relevant departments must take timely action.</span>
     </footer>
 
-    <div class="modal fade" id="createModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fa fa-file-contract me-2"></i>Initiate New Project (Sales)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="createForm">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Client Name</label>
-                                <select class="form-select" id="inpClient" required></select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Site Name (Location)</label>
-                                <input type="text" class="form-control" id="inpSite" required placeholder="e.g. Bellary">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Machine Type</label>
-                                <input type="text" class="form-control" id="inpMachine" required placeholder="e.g. CGL / CRM">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Sales Order (SO) No.</label>
-                                <input type="text" class="form-control" id="inpSO" required placeholder="e.g. SO-2024-001">
-                            </div>
-                            
-                            <div class="col-md-6 non-sales-field" style="display:none;"><input type="text" class="form-control" id="inpProjectNo"></div>
-                            <div class="col-md-4 non-sales-field" style="display:none;"><input type="text" class="form-control" id="inpPONum"></div>
-                            <div class="col-md-4 non-sales-field" style="display:none;"><input type="number" class="form-control" id="inpValue"></div>
-                            <div class="col-md-4 non-sales-field" style="display:none;"><input type="text" class="form-control" id="inpTerms"></div>
-
-                            <div class="col-md-12">
-                                <label class="form-label">Project Manager</label>
-                                <input type="text" class="form-control bg-light" value="To be assigned by VP (Varun/Aseem)" disabled readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Upload Documents (SO Copy)</label>
-                                <input class="form-control" type="file" id="inpFile">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="app.submitProject()">Initiate Workflow</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="detailsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg"> 
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Project Details & History</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    
-                    <div class="mb-3 p-3 bg-light rounded border">
-                        <div class="row">
-                            <div class="col-3 border-end"><strong>Code:</strong> <div id="detCode" class="text-primary fw-bold"></div></div>
-                            <div class="col-3 border-end"><strong>Status:</strong> <div id="detStatus" class="fw-bold small"></div></div>
-                            <div class="col-3 border-end"><strong>SO No:</strong> <div id="detSO"></div></div>
-                            <div class="col-3"><strong>Docs:</strong> <div id="detFile" class="fst-italic text-muted small"></div></div>
-                        </div>
-                    </div>
-
-                    <h6 class="text-primary border-bottom pb-2 mb-2 small"><i class="fa fa-route me-2"></i>Project Workflow</h6>
-                    <div id="progressTimeline" class="mb-3"></div>
-
-                    <div id="valueTrackingContainer" class="mb-3"></div>
-
-                    <h6 class="text-primary border-bottom pb-2 mb-2 small"><i class="fa fa-list-ul me-2"></i>Audit Log</h6>
-                    <div id="auditLogContainer" class="audit-log"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="actionModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered"> <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="actionTitle">Action</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="actionBody"></div>
-                <div class="modal-footer p-2">
-                    <button type="button" class="btn btn-primary w-100" onclick="app.confirmAction()">Confirm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
-        const CONSTANTS = {
-            STATUS: {
-                AWAITING_DESIGN_PROJECT_NO: 'AWAITING_DESIGN_PROJECT_NO',
-                PENDING_DIRECTOR_DECISION: 'PENDING_DIRECTOR_DECISION',   
-                AWAITING_ADVANCE: 'AWAITING_ADVANCE',                    
-                PENDING_PM_ASSIGNMENT: 'PENDING_PM_ASSIGNMENT',            
-                PENDING_KICKOFF: 'PENDING_KICKOFF',                        
-                PLANNING_BILLING_PENDING: 'PLANNING_BILLING_PENDING',
-                DESIGN_DRAWING_FREEZE_PENDING: 'DESIGN_DRAWING_FREEZE_PENDING',
-                VP_DRAWING_APPROVAL_PENDING: 'VP_DRAWING_APPROVAL_PENDING',
-                EXECUTION_READY: 'EXECUTION_READY',
-                ACTIVE: 'ACTIVE',                                          
-                BLOCKED_NO_APPROVAL: 'BLOCKED_NO_APPROVAL'                
-            },
-            ROLES: {
-                SALES: 'SALES', DESIGN: 'DESIGN', DIRECTOR: 'DIRECTOR', FINANCE: 'FINANCE', VP: 'VP', PM: 'PM', PLANNING: 'PLANNING'
-            },
-            SLA: { DESIGN: 1, DECISION: 2, ADVANCE: 15, PM: 2, KICKOFF: 2, PLANNING: 7, DESIGN_DRAWING: 10, VP_APPROVAL: 2 },
-            CONTACTS: {
-                DIRECTORS: ['Navneet Gill', 'Sameer Bansal'],
-                SENIOR_MGMT: ['Aseem Gill', 'Varun Jay Rana']
-            },
-            CLIENTS: [
-                "JTL", "JSW", "JSW JFE", "SHYAM", "CIM", "APOLLO", "GOPANI", "JINDAL", 
-                "UTTAM STRIPS", "PROMPT", "MMI", "BMWIL", "ALSHAKER", "AFRICAN STEEL", 
-                "VIKAS IRON & STEEL CO.", "GAURANG", "AECPL", "KHUSHBU", 
-                "A.S. Precision Machines", "STELCO"
-            ],
-            PMS: [
-                "Aditya Saini", "Aditya Sharma", "Mayank Bandha", "Saurabh Jangra", 
-                "Sachin TB", "Tripurari", "Kunal", "OM", "Gulshan", "Kush"
-            ]
-        };
-
-        const app = {
-            data: [],
-            currentUser: { role: 'SALES', name: 'Sashikanth Tripathi' },
-            table: null,
-            currentActionId: null,
-
-            init() {
-                this.loadData();
-                this.runEscalationChecks(); 
-                this.initTable();
-                this.updateUI();
-                
-                const Toast = Swal.mixin({
-                    toast: true, position: 'top-end', showConfirmButton: false, timer: 3000
-                });
-                Toast.fire({ icon: 'info', title: 'Logged in as Sales' });
-            },
-
-            loadData() {
-                const stored = localStorage.getItem('yd_governance_v4');
-                if (stored) {
-                    this.data = JSON.parse(stored);
-                } else {
-                    this.data = this.generateDummyData(); 
-                    this.saveData();
-                }
-            },
-
-            saveData() {
-                localStorage.setItem('yd_governance_v4', JSON.stringify(this.data));
-                this.renderTable();
-            },
-
-            resetData() {
-                if(confirm("Reset all demo data and logic?")) {
-                    localStorage.removeItem('yd_governance_v4');
-                    location.reload();
-                }
-            },
-
-            parseExcel(file, projectId) {
-                if (!file) return Swal.fire('Error', 'Please select an Excel file', 'error');
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, {type: 'array'});
-                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        const rows = XLSX.utils.sheet_to_json(firstSheet);
-                        
-                        let structure = { totalValue: 0, remainingValue: 0, assemblies: [] };
-                        
-                        rows.forEach(row => {
-                            const asmName = row['Assembly'] || row['Assembly/Subassembly'] || 'General Assembly';
-                            const subName = row['Subassembly'] || 'General Subassembly';
-                            const compName = row['Component'] || `Comp-${Math.floor(Math.random()*1000)}`;
-                            const val = parseFloat(row['Tentative Billing Value'] || row['Value'] || row['Dispatch Value'] || 0);
-                            const dispatchMonth = row['Dispatch Month'] || row['Month'] || 'Unscheduled';
-                            
-                            let asm = structure.assemblies.find(a => a.name === asmName);
-                            if (!asm) {
-                                asm = { name: asmName, allocatedValue: 0, remainingValue: 0, subassemblies: [] };
-                                structure.assemblies.push(asm);
-                            }
-                            
-                            let sub = asm.subassemblies.find(s => s.name === subName);
-                            if (!sub) {
-                                sub = { name: subName, allocatedValue: 0, remainingValue: 0, deliveryDate: '', deliveryDays: '', components: [] };
-                                asm.subassemblies.push(sub);
-                            }
-                            
-                            sub.components.push({ 
-                                name: compName, 
-                                plannedValue: val,
-                                remainingValue: val,
-                                dispatchedValue: 0,
-                                dispatchMonth: dispatchMonth
-                            });
-                            
-                            sub.allocatedValue += val;
-                            sub.remainingValue += val;
-                        });
-                        
-                        structure.assemblies.forEach(a => {
-                            a.allocatedValue = a.subassemblies.reduce((sum, s) => sum + s.allocatedValue, 0);
-                            a.remainingValue = a.allocatedValue;
-                            structure.totalValue += a.allocatedValue;
-                        });
-                        structure.remainingValue = structure.totalValue;
-
-                        if (this.validateStructure(structure)) {
-                            const p = this.data.find(x => x.id === projectId);
-                            p.structure = structure;
-                            $('#uploadSummary').html(`<div class="alert alert-success mt-2 small"><i class="fa fa-check-circle me-1"></i>Parsed! Total: ₹${structure.totalValue} | Assemblies: ${structure.assemblies.length}</div>`);
-                        }
-                    } catch (err) {
-                        Swal.fire('Error', err.message || 'Invalid Excel format or structure mismatch.', 'error');
-                        $('#uploadSummary').html(`<div class="alert alert-danger mt-2 small"><i class="fa fa-times-circle me-1"></i>Validation Failed</div>`);
-                    }
-                };
-                reader.readAsArrayBuffer(file);
-            },
-
-            validateStructure(structure) {
-                let isValid = true;
-                let projSum = 0;
-                structure.assemblies.forEach(asm => {
-                    let asmSum = 0;
-                    asm.subassemblies.forEach(sub => {
-                        let subSum = sub.components.reduce((acc, c) => acc + (c.plannedValue || 0), 0);
-                        if (Math.abs(subSum - sub.allocatedValue) > 0.01) isValid = false;
-                        asmSum += sub.allocatedValue;
-                    });
-                    if (Math.abs(asmSum - asm.allocatedValue) > 0.01) isValid = false;
-                    projSum += asm.allocatedValue;
-                });
-                if (Math.abs(projSum - structure.totalValue) > 0.01) isValid = false;
-                
-                if (!isValid) throw new Error("Value mismatch: Sum of parts does not equal total value.");
-                return isValid;
-            },
-
-            calculateMonthlyRevenue(projectId) {
-                const p = this.data.find(x => x.id === projectId);
-                if (!p || !p.structure) return {};
-
-                let monthly = {};
-
-                p.structure.assemblies.forEach(a => {
-                    a.subassemblies.forEach(s => {
-                        s.components.forEach(c => {
-                            const month = c.dispatchMonth;
-                            if (!monthly[month]) {
-                                monthly[month] = { planned: 0, dispatched: 0, remaining: 0 };
-                            }
-                            monthly[month].planned += c.plannedValue || 0;
-                            monthly[month].dispatched += c.dispatchedValue || 0;
-                            monthly[month].remaining += c.remainingValue || 0;
-                        });
-                    });
-                });
-
-                return monthly;
-            },
-
-            dispatchItem(projectId, assemblyName, subassemblyName, componentName, value) {
-                const p = this.data.find(x => x.id === projectId);
-                if (!p || !p.structure) return false;
-                
-                const asm = p.structure.assemblies.find(a => a.name === assemblyName);
-                const sub = asm ? asm.subassemblies.find(s => s.name === subassemblyName) : null;
-                const comp = sub ? sub.components.find(c => c.name === componentName) : null;
-                
-                if (!comp) return false;
-                
-                if (comp.remainingValue < value) {
-                    Swal.fire('Error', 'Dispatch value exceeds remaining component value.', 'error');
-                    return false;
-                }
-                
-                comp.remainingValue -= value;
-                comp.dispatchedValue += value;
-                
-                sub.remainingValue -= value;
-                asm.remainingValue -= value;
-                p.structure.remainingValue -= value;
-                
-                this.saveData();
-                return true;
-            },
-
-            runEscalationChecks() {
-                let changed = false;
-                let alerts = [];
-                this.data.forEach(p => {
-                    const days = (new Date() - new Date(p.stageDate)) / (1000 * 60 * 60 * 24);
-                    const lastLog = p.history.length > 0 ? p.history[p.history.length - 1] : { action: '' };
-
-                    if (p.status === CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO && days > CONSTANTS.SLA.DESIGN) {
-                          if (!lastLog.action.includes('Escalated')) {
-                              const msg = `SLA Breached (>24h). Auto-escalated to Directors: ${CONSTANTS.CONTACTS.DIRECTORS.join(', ')}`;
-                              p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                              alerts.push(`Project ${p.code}: Design SLA Breached`);
-                              p.ownerRole = 'Design Team (Escalated)';
-                              changed = true;
-                          }
-                    }
-                    if (p.status === CONSTANTS.STATUS.AWAITING_ADVANCE && days > CONSTANTS.SLA.ADVANCE) {
-                          p.status = CONSTANTS.STATUS.BLOCKED_NO_APPROVAL;
-                          const msg = `SLA Breached (>15 Days). Project Auto-BLOCKED. Escalated to: ${CONSTANTS.CONTACTS.DIRECTORS.join(', ')}`;
-                          p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                          alerts.push(`Project ${p.code}: BLOCKED due to payment delay`);
-                          changed = true;
-                    }
-                    if (p.status === CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT && days > CONSTANTS.SLA.PM) {
-                          if (!lastLog.action.includes('Escalated')) {
-                              const msg = `SLA Breached (>48h). Escalated to Directors: ${CONSTANTS.CONTACTS.DIRECTORS.join(', ')}`;
-                              p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                              alerts.push(`Project ${p.code}: PM Assignment Escalated`);
-                              changed = true;
-                          }
-                    }
-                    if (p.status === CONSTANTS.STATUS.PENDING_KICKOFF && days > CONSTANTS.SLA.KICKOFF) {
-                        if (!lastLog.action.includes('Escalated')) {
-                            const msg = `SLA Breached (>48h). Kick-off Delayed. Escalated to: ${CONSTANTS.CONTACTS.DIRECTORS.join(', ')}`;
-                            p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                            alerts.push(`Project ${p.code}: Kick-off Delayed`);
-                            changed = true;
-                        }
-                    }
-                    if (p.status === CONSTANTS.STATUS.PLANNING_BILLING_PENDING && days > CONSTANTS.SLA.PLANNING) {
-                        if (!lastLog.action.includes('Escalated')) {
-                            const msg = `SLA Breached (>${CONSTANTS.SLA.PLANNING} Days). Planning Delayed. Auto-escalated to: VP & Directors`;
-                            p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                            alerts.push(`Project ${p.code}: Planning Schedule Delayed`);
-                            p.ownerRole = 'Planning Team (Escalated)';
-                            changed = true;
-                        }
-                    }
-                    if (p.status === CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING && days > CONSTANTS.SLA.DESIGN_DRAWING) {
-                        if (!lastLog.action.includes('Escalated')) {
-                            const msg = `SLA Breached (>${CONSTANTS.SLA.DESIGN_DRAWING} Days). Drawing Freeze Delayed. Auto-escalated to: VP & Directors`;
-                            p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                            alerts.push(`Project ${p.code}: Drawing Freeze Delayed`);
-                            p.ownerRole = 'Design Team (Escalated)';
-                            changed = true;
-                        }
-                    }
-                    if (p.status === CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING && days > CONSTANTS.SLA.VP_APPROVAL) {
-                        if (!lastLog.action.includes('Escalated')) {
-                            const msg = `SLA Breached (>${CONSTANTS.SLA.VP_APPROVAL} Days). Drawing Approval Delayed. Auto-escalated to: ${CONSTANTS.CONTACTS.DIRECTORS.join(', ')}`;
-                            p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                            alerts.push(`Project ${p.code}: Drawing Approval Escalated`);
-                            p.ownerRole = 'COO/VP (Escalated)';
-                            changed = true;
-                        }
-                    }
-                });
-
-                if (changed) {
-                    this.saveData();
-                    if (alerts.length > 0) {
-                        Swal.fire({
-                            icon: 'warning', title: 'Automated Governance Actions', html: alerts.join('<br>'),
-                            toast: true, position: 'top-end', timer: 6000, showConfirmButton: false,
-                            background: '#fff3cd', color: '#856404'
-                        });
-                    }
-                }
-            },
-
-            initTable() {
-                this.table = $('#kickoffTable').DataTable({
-                    pageLength: 25,
-                    order: [[0, 'asc']],
-                    columns: [
-                        { data: 'sla', className: 'text-center' },
-                        { data: 'code', className: 'fw-bold text-primary' },
-                        { data: 'client' },
-                        { data: 'stage' },
-                        { data: 'owner' },
-                        { data: 'action', className: 'text-end', orderable: false }
-                    ]
-                });
-
-                $('#kickoffTable tbody').on('click', 'tr', function(e) {
-                    if ($(e.target).closest('button').length || $(e.target).closest('input').length) return;
-                    const data = app.table.row(this).data();
-                    const codeText = $(data.code).text(); 
-                    const p = app.data.find(x => x.code === codeText || x.tempId === codeText);
-                    if(p) app.openDetails(p.id);
-                });
-            },
-
-            renderTable() {
-                if (!this.table) return;
-                this.table.clear();
-                const rows = this.data.map(p => {
-                    const sla = this.calculateSLA(p);
-                    const statusInfo = this.getStatusInfo(p);
-                    const actionBtn = this.getActionBtn(p);
-                    return {
-                        sla: `<span class="badge rounded-pill ${sla.color}" style="min-width: 60px">${sla.text}</span>`,
-                        code: `<span class="fw-bold">${p.code}</span>`,
-                        client: `<div>${p.client}</div><div class="small text-muted"><i class="fa fa-map-marker-alt me-1"></i>${p.site} / ${p.machine}</div>`,
-                        stage: `<span class="badge status-badge ${statusInfo.cls}">${statusInfo.label}</span>`,
-                        owner: `<div class="fw-bold small">${p.owner}</div><div class="text-muted" style="font-size:0.7rem">${p.ownerRole || 'Owner'}</div>`,
-                        action: actionBtn
-                    };
-                });
-                this.table.rows.add(rows);
-                this.table.draw();
-            },
-
-            calculateSLA(p) {
-                if (p.status === CONSTANTS.STATUS.ACTIVE || p.status === CONSTANTS.STATUS.EXECUTION_READY) return { color: 'badge-sla-green', text: 'Active' };
-                if (p.status === CONSTANTS.STATUS.BLOCKED_NO_APPROVAL) return { color: 'badge-sla-red', text: 'BLOCKED' };
-                
-                const daysInStage = (new Date() - new Date(p.stageDate)) / (1000 * 60 * 60 * 24);
-                let limit = 2; 
-                
-                if (p.status === CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO) limit = CONSTANTS.SLA.DESIGN;
-                if (p.status === CONSTANTS.STATUS.AWAITING_ADVANCE) limit = CONSTANTS.SLA.ADVANCE;
-                if (p.status === CONSTANTS.STATUS.PLANNING_BILLING_PENDING) limit = CONSTANTS.SLA.PLANNING;
-                if (p.status === CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING) limit = CONSTANTS.SLA.DESIGN_DRAWING;
-                if (p.status === CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING) limit = CONSTANTS.SLA.VP_APPROVAL;
-                
-                if (daysInStage > limit) return { color: 'badge-sla-red', text: 'Escalated' };
-                if (daysInStage > limit * 0.7) return { color: 'badge-sla-amber', text: 'Due Soon' };
-                return { color: 'badge-sla-green', text: 'On Track' };
-            },
-
-            getStatusInfo(p) {
-                const map = {
-                    [CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO]: { cls: 'bg-stage-0', label: 'Design: Assign Project #' },
-                    [CONSTANTS.STATUS.PENDING_DIRECTOR_DECISION]: { cls: 'bg-stage-1', label: 'Director Decision' },
-                    [CONSTANTS.STATUS.AWAITING_ADVANCE]: { cls: 'bg-stage-2', label: 'Awaiting Advance' },
-                    [CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT]: { cls: 'bg-stage-3', label: 'Pending PM Assign' },
-                    [CONSTANTS.STATUS.PENDING_KICKOFF]: { cls: 'bg-stage-4', label: 'Pending Kick-Off' },
-                    [CONSTANTS.STATUS.PLANNING_BILLING_PENDING]: { cls: 'bg-warning text-dark', label: 'Planning: Tentative Billing Schedule' },
-                    [CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING]: { cls: 'bg-info text-dark', label: 'Design: Drawing Time Freeze' },
-                    [CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING]: { cls: 'bg-danger text-white', label: 'VP: Drawing Date Approval' },
-                    [CONSTANTS.STATUS.EXECUTION_READY]: { cls: 'bg-stage-5', label: 'Execution (Realization)' },
-                    [CONSTANTS.STATUS.ACTIVE]: { cls: 'bg-stage-5', label: 'Execution Started' },
-                    [CONSTANTS.STATUS.BLOCKED_NO_APPROVAL]: { cls: 'bg-stage-blocked', label: 'BLOCKED - ESCALATED' }
-                };
-                return map[p.status] || { cls: 'bg-secondary', label: p.status };
-            },
-
-            getActionBtn(p) {
-                if (p.status === CONSTANTS.STATUS.ACTIVE || p.status === CONSTANTS.STATUS.EXECUTION_READY) return `<span class="text-success small fw-bold"><i class="fa fa-check-circle"></i> Running</span>`;
-                if (p.status === CONSTANTS.STATUS.BLOCKED_NO_APPROVAL) return `<span class="text-danger small fw-bold"><i class="fa fa-ban"></i> HALTED</span>`;
-                
-                const role = this.currentUser.role;
-                let btn = '';
-
-                if (role === 'DESIGN' && p.status === CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO) {
-                    btn = `<button class="btn btn-sm text-white" style="background-color:#6c757d" onclick="app.openAction(${p.id})">Enter Project #</button>`;
-                } else if (role === 'DIRECTOR' && p.status === CONSTANTS.STATUS.PENDING_DIRECTOR_DECISION) {
-                    btn = `<button class="btn btn-sm btn-warning fw-bold" onclick="app.openAction(${p.id})">Take Decision</button>`;
-                } else if (role === 'FINANCE' && p.status === CONSTANTS.STATUS.AWAITING_ADVANCE) {
-                    btn = `<button class="btn btn-sm btn-info text-white" onclick="app.openAction(${p.id})">Record Receipt</button>`;
-                } else if (role === 'VP' && p.status === CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT) {
-                    btn = `<button class="btn btn-sm btn-primary" onclick="app.openAction(${p.id})">Assign PM</button>`;
-                } else if (role === 'PM' && p.status === CONSTANTS.STATUS.PENDING_KICKOFF) {
-                    btn = `<button class="btn btn-sm btn-dark" style="background-color: #6f42c1" onclick="app.openAction(${p.id})">Complete Kick-Off</button>`;
-                } else if (role === 'PLANNING' && p.status === CONSTANTS.STATUS.PLANNING_BILLING_PENDING) {
-                    btn = `<button class="btn btn-sm btn-warning" onclick="app.openAction(${p.id})">Upload Billing Schedule</button>`;
-                } else if (role === 'DESIGN' && p.status === CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING) {
-                    btn = `<button class="btn btn-sm btn-info text-white" onclick="app.openAction(${p.id})">Set Drawing Dates</button>`;
-                } else if (role === 'VP' && p.status === CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING) {
-                    btn = `<button class="btn btn-sm btn-danger text-white" onclick="app.openAction(${p.id})">Review & Approve Dates</button>`;
-                } else {
-                    btn = `<button class="btn btn-sm btn-outline-warning text-dark" style="font-size: 0.75rem" onclick="app.sendReminder(${p.id}, '${p.ownerRole}')">
-                            <i class="fa fa-bell"></i> Remind
-                           </button>`;
-                }
-                return btn;
-            },
-
-            sendReminder(id, targetRole) {
-                event.stopPropagation();
-                
-                Swal.fire({
-                    title: 'Send Reminder?',
-                    text: `This will trigger a notification to the ${targetRole}.`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, Send Reminder',
-                    confirmButtonColor: '#ffc107'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const p = this.data.find(x => x.id === id);
-                        const msg = `Reminder Sent to ${targetRole} (Triggered by ${this.currentUser.name})`;
-                        
-                        p.history.push({ action: msg, by: 'SYSTEM', date: new Date().toISOString() });
-                        this.saveData();
-
-                        Swal.fire('Sent!', `Reminder has been sent to ${targetRole}.`, 'success');
-                    }
-                });
-            },
-
-            openCreateModal() {
-                document.getElementById('createForm').reset();
-                
-                const select = document.getElementById('inpClient');
-                select.innerHTML = '<option value="" selected disabled>Select Client...</option>';
-                CONSTANTS.CLIENTS.forEach(client => {
-                    const opt = document.createElement('option');
-                    opt.value = client;
-                    opt.innerText = client;
-                    select.appendChild(opt);
-                });
-
-                const isSales = this.currentUser.role === 'SALES';
-                if(isSales) { $('.non-sales-field').hide(); } else { $('.non-sales-field').show(); }
-                new bootstrap.Modal(document.getElementById('createModal')).show();
-            },
-
-            submitProject() {
-                const client = $('#inpClient').val();
-                const site = $('#inpSite').val();
-                const machine = $('#inpMachine').val();
-                const so = $('#inpSO').val();
-                const fileInput = document.getElementById('inpFile');
-
-                if(!client || !site || !machine || !so) return Swal.fire('Error', 'Please fill all required Sales fields.', 'error');
-
-                const maxId = this.data.reduce((max, p) => Math.max(max, p.id), 2600);
-                const nextId = maxId + 1;
-                const tempCode = `PENDING-${nextId}`;
-
-                const newP = {
-                    id: nextId,
-                    code: tempCode,
-                    tempId: tempCode, 
-                    projectNo: null, 
-                    client: client,
-                    site: site,
-                    machine: machine,
-                    poValue: null,
-                    poNum: null,   
-                    soNum: so,
-                    terms: null,   
-                    file: fileInput.files[0] ? fileInput.files[0].name : 'No file',
-                    status: CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO,
-                    owner: 'DESIGN',
-                    ownerRole: 'Design Team',
-                    stageDate: new Date().toISOString(),
-                    history: [{ action: 'Workflow Initiated (Sales)', by: this.currentUser.name, date: new Date().toISOString() }]
-                };
-
-                this.data.push(newP);
-                this.saveData();
-                bootstrap.Modal.getInstance(document.getElementById('createModal')).hide();
-                
-                Swal.fire({ 
-                    icon: 'success', title: 'Initiated', 
-                    text: 'Project sent to Design Team for Project Number allocation.',
-                    footer: '<i class="fa fa-envelope me-1"></i> Email Trigger Sent to: design@ydgroup.com'
-                });
-            },
-
-            openAction(id) {
-                this.currentActionId = id;
-                const p = this.data.find(x => x.id === id);
-                if (p.status === CONSTANTS.STATUS.BLOCKED_NO_APPROVAL) {
-                    return Swal.fire('System Blocked', 'This project is halted due to compliance issues. Contact Directors immediately.', 'error');
-                }
-                const role = this.currentUser.role;
-                const title = document.getElementById('actionTitle');
-                const body = document.getElementById('actionBody');
-
-                if (role === 'DESIGN' && p.status === CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO) {
-                    title.innerText = "Allocate Project Number";
-                    body.innerHTML = `
-                        <p class="small text-muted mb-2">Temporary ID: <strong>${p.code}</strong></p>
-                        <div class="alert alert-warning small py-1"><i class="fa fa-clock me-1"></i> SLA: 24 Hours</div>
-                        <label class="form-label">Official Project Number</label>
-                        <input type="text" class="form-control mb-2" id="actProjectNo" placeholder="e.g. 2604-JSW-CGL">
-                        <div class="form-text text-muted">This will lock the project code.</div>`;
-                } else if (role === 'DIRECTOR') {
-                    title.innerText = "Management Decision";
-                    body.innerHTML = `
-                        <p class="small text-muted mb-2">Project: <strong>${p.code}</strong></p>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="dec" id="d1" value="WITH" checked>
-                            <label class="form-check-label" for="d1">Approve <strong>WITH</strong> Advance</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="dec" id="d2" value="WITHOUT">
-                            <label class="form-check-label" for="d2">Approve <strong>WITHOUT</strong> Advance</label>
-                        </div>`;
-                } else if (role === 'FINANCE') {
-                    title.innerText = "Record Advance / Update PO";
-                    body.innerHTML = `
-                        <p class="small text-muted mb-2">Project: <strong>${p.code}</strong></p>
-                        <div class="mb-2">
-                             <label class="form-label">PO Value Update</label>
-                             <input type="number" class="form-control" id="actVal" value="${p.poValue || ''}" placeholder="Enter Value">
-                        </div>
-                        <div class="mb-2">
-                             <label class="form-label">Payment Terms</label>
-                             <input type="text" class="form-control" id="actTerms" value="${p.terms || ''}" placeholder="Enter Terms">
-                        </div>
-                        <div class="mb-2">
-                             <label class="form-label">Upload Receipt</label>
-                             <input class="form-control" type="file">
-                        </div>`;
-                } else if (role === 'VP' && p.status === CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT) {
-                    title.innerText = "Assign Project Manager";
-                    let pmOptions = CONSTANTS.PMS.map(pm => `<option value="${pm}">${pm}</option>`).join('');
-                    
-                    body.innerHTML = `
-                        <p class="small text-muted mb-2">Project: <strong>${p.code}</strong></p>
-                        <label class="form-label">Select PM</label>
-                        <select class="form-select" id="actPM">
-                            ${pmOptions}
-                        </select>`;
-                } else if (role === 'PM' && p.status === CONSTANTS.STATUS.PENDING_KICKOFF) {
-                    title.innerText = "Kick-Off Verification";
-                    body.innerHTML = `
-                        <p class="small text-muted mb-2">Project: <strong>${p.code}</strong></p>
-                        <div class="alert alert-light border small">Confirm Internal Kick-Off Meeting (MOM)</div>
-                        <input type="file" class="form-control">`;
-                } else if (role === 'PLANNING' && p.status === CONSTANTS.STATUS.PLANNING_BILLING_PENDING) {
-                    title.innerText = "Upload Tentative Billing Schedule (LOE)";
-                    body.innerHTML = `
-                        <p class="small text-muted mb-2">Project: <strong>${p.code}</strong></p>
-                        <div class="alert alert-light border small">Upload Excel (Assembly &rarr; Subassembly &rarr; Component &rarr; Billing Value & Dispatch Month)</div>
-                        <input type="file" id="loeExcel" class="form-control mb-2" accept=".xlsx, .xls">
-                        <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="app.parseExcel(document.getElementById('loeExcel').files[0], ${p.id})">Parse & Validate Structure</button>
-                        <div id="uploadSummary"></div>`;
-                } else if ((role === 'DESIGN' && p.status === CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING) || (role === 'VP' && p.status === CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING)) {
-                    title.innerText = role === 'DESIGN' ? "Drawing Design Time Freeze" : "Review & Approve Drawing Dates";
-                    
-                    let drawHtml = '<table class="table table-bordered table-sm small"><thead><tr class="table-light"><th>Assembly / Subassembly</th><th style="width: 35%">Delivery Date</th><th style="width: 25%">Days Req.</th></tr></thead><tbody>';
-                    
-                    if (p.structure && p.structure.assemblies) {
-                        p.structure.assemblies.forEach((a, aIdx) => {
-                            drawHtml += `<tr class="table-secondary"><td colspan="3" class="fw-bold">${a.name}</td></tr>`;
-                            a.subassemblies.forEach((s, sIdx) => {
-                                drawHtml += `<tr>
-                                    <td class="ps-3 align-middle"><i class="fa fa-level-up-alt fa-rotate-90 me-2 text-muted"></i>${s.name}</td>
-                                    <td><input type="date" class="form-control form-control-sm design-date" data-asm="${aIdx}" data-sub="${sIdx}" value="${s.deliveryDate || ''}"></td>
-                                    <td><input type="number" class="form-control form-control-sm design-days" data-asm="${aIdx}" data-sub="${sIdx}" value="${s.deliveryDays || ''}" placeholder="e.g. 15"></td>
-                                </tr>`;
-                            });
-                        });
-                    }
-                    drawHtml += '</tbody></table>';
-
-                    let alertMsg = role === 'DESIGN' 
-                        ? "Fix the drawing design delivery schedule for all assemblies." 
-                        : "Review the tentative dates from Design. Modify as needed and Approve.";
-
-                    body.innerHTML = `
-                        <p class="small text-muted mb-2">Project: <strong>${p.code}</strong></p>
-                        <div class="alert alert-light border small">${alertMsg}</div>
-                        <div style="max-height: 400px; overflow-y: auto;" class="mb-2 p-0 border">
-                            ${drawHtml}
-                        </div>`;
-                }
-                new bootstrap.Modal(document.getElementById('actionModal')).show();
-            },
-
-            confirmAction() {
-                const id = this.currentActionId;
-                const p = this.data.find(x => x.id === id);
-                const role = this.currentUser.role;
-                const now = new Date().toISOString();
-                let historyMsg = "";
-                let triggerMsg = "";
-                let triggerIcon = "fa-envelope";
-
-                if (role === 'DESIGN' && p.status === CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO) {
-                    const newCodeInput = $('#actProjectNo').val();
-                    if(!newCodeInput) return Swal.fire('Error', 'Project Number is mandatory', 'error');
-                    const newCode = newCodeInput.toUpperCase();
-                    if (this.data.some(x => x.code === newCode && x.id !== p.id)) {
-                        return Swal.fire('Error', 'Project number already exists in the system.', 'error');
-                    }
-                    p.code = newCode;
-                    p.projectNo = p.code;
-                    p.status = CONSTANTS.STATUS.PENDING_DIRECTOR_DECISION;
-                    p.owner = 'DIRECTOR';
-                    p.ownerRole = 'Management';
-                    historyMsg = `Project Number Allocated: ${p.code}`;
-                    triggerMsg = `Email Sent to Directors (${CONSTANTS.CONTACTS.DIRECTORS.join(', ')}): Approval Required`;
-                } 
-                else if (role === 'DIRECTOR') {
-                    const dec = $('input[name="dec"]:checked').val();
-                    if (dec === 'WITH') {
-                        p.status = CONSTANTS.STATUS.AWAITING_ADVANCE;
-                        p.owner = 'FINANCE';
-                        p.ownerRole = 'Accounts';
-                        historyMsg = "Decision: Proceed WITH Advance";
-                        triggerMsg = "Email Sent to Finance: Collect Advance";
-                    } else {
-                        p.status = CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT;
-                        p.owner = 'VP';
-                        p.ownerRole = 'COO/VP';
-                        historyMsg = "Decision: Proceed WITHOUT Advance (Bypassed Finance)";
-                        triggerMsg = `WhatsApp Sent to VP: Assign PM Immediately`;
-                        triggerIcon = "fa-whatsapp";
-                    }
-                } 
-                else if (role === 'FINANCE') {
-                    const val = $('#actVal').val();
-                    const terms = $('#actTerms').val();
-                    if (val) p.poValue = val;
-                    if (terms) p.terms = terms;
-                    p.status = CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT;
-                    p.owner = 'VP';
-                    p.ownerRole = 'COO/VP';
-                    historyMsg = "Advance clocked";
-                    triggerMsg = `WhatsApp Sent to VP: Payment Cleared, Assign PM`;
-                    triggerIcon = "fa-whatsapp";
-                } 
-                else if (role === 'VP' && p.status === CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT) {
-                    const pm = $('#actPM').val();
-                    p.status = CONSTANTS.STATUS.PENDING_KICKOFF;
-                    p.owner = pm;
-                    p.ownerRole = 'Project Manager';
-                    historyMsg = `PM allocated: ${pm}`;
-                    triggerMsg = `Email Sent to ${pm}: Conduct Kick-Off`;
-                } 
-                else if (role === 'PM' && p.status === CONSTANTS.STATUS.PENDING_KICKOFF) {
-                    p.status = CONSTANTS.STATUS.PLANNING_BILLING_PENDING;
-                    p.owner = "Shivendu Sharma";
-                    p.ownerRole = "Planning Team";
-                    historyMsg = "Project kicked off";
-                    triggerMsg = "Email Sent to Planning: Upload Tentative Billing Schedule";
-                }
-                else if (role === 'PLANNING' && p.status === CONSTANTS.STATUS.PLANNING_BILLING_PENDING) {
-                    if (!p.structure || p.structure.assemblies.length === 0) {
-                        return Swal.fire('Validation Error', 'You must parse and validate a valid Excel LOE file first.', 'error');
-                    }
-                    p.status = CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING;
-                    p.owner = 'DESIGN';
-                    p.ownerRole = 'Design Team';
-                    historyMsg = "Tentative Billing Schedule Uploaded";
-                    triggerMsg = "Email Sent to Design: Fix Drawing Design Time Schedule";
-                }
-                else if ((role === 'DESIGN' && p.status === CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING) || (role === 'VP' && p.status === CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING)) {
-                    let allFilled = true;
-                    $('.design-date').each(function() {
-                        const aIdx = $(this).data('asm');
-                        const sIdx = $(this).data('sub');
-                        const dateVal = $(this).val();
-                        const daysVal = $(`.design-days[data-asm="${aIdx}"][data-sub="${sIdx}"]`).val();
-                        
-                        if(!dateVal || !daysVal) allFilled = false;
-                        
-                        p.structure.assemblies[aIdx].subassemblies[sIdx].deliveryDate = dateVal;
-                        p.structure.assemblies[aIdx].subassemblies[sIdx].deliveryDays = daysVal;
-                    });
-
-                    if (!allFilled) {
-                        this.saveData(); 
-                        return Swal.fire('Incomplete', 'Please enter dates and days for all subassemblies to continue.', 'warning');
-                    }
-
-                    if (role === 'DESIGN') {
-                        p.status = CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING;
-                        p.owner = 'VP';
-                        p.ownerRole = 'COO/VP';
-                        historyMsg = "Drawing Design Time Freeze Submitted";
-                        triggerMsg = "WhatsApp Sent to COO/VP: Review & Approve Drawing Dates";
-                        triggerIcon = "fa-whatsapp";
-                    } else {
-                        // VP Approval
-                        p.status = CONSTANTS.STATUS.EXECUTION_READY;
-                        p.owner = 'PM';
-                        p.ownerRole = 'Project Manager';
-                        historyMsg = "Drawing Dates Approved & Baselines Set";
-                        triggerMsg = "System Notification: Realization Phase Active";
-                        triggerIcon = "fa-check";
-                    }
-                }
-
-                p.stageDate = now;
-                p.history.push({ action: historyMsg, by: this.currentUser.name, date: now });
-                this.saveData();
-                
-                const modalEl = document.getElementById('actionModal');
-                if (modalEl) bootstrap.Modal.getInstance(modalEl).hide();
-
-                Swal.fire({
-                    icon: 'success', title: 'Workflow Updated', text: historyMsg,
-                    footer: `<i class="fa ${triggerIcon} me-1"></i> ${triggerMsg}`,
-                    timer: 2500, showConfirmButton: false
-                });
-            },
-
-            openDetails(id) {
-                const p = this.data.find(x => x.id === id);
-                $('#detCode').text(p.code);
-                $('#detStatus').html(this.getStatusInfo(p).label);
-                $('#detSO').text(p.soNum || 'N/A');
-                $('#detFile').text(p.file || 'No file');
-
-                this.renderTimeline(p.status);
-
-                let valueTrackingHtml = '<div class="alert alert-light border small text-muted">Awaiting Planning Schedule Upload</div>';
-                if (p.structure) {
-                    valueTrackingHtml = `
-                        <div class="d-flex justify-content-between mb-2 small">
-                            <span class="fw-bold">Total Project Value: ₹${p.structure.totalValue.toLocaleString()}</span>
-                            <span class="fw-bold text-danger">Remaining: ₹${p.structure.remainingValue.toLocaleString()}</span>
-                        </div>
-                        <div class="accordion accordion-flush border" id="accValueTracking">`;
-                    
-                    p.structure.assemblies.forEach((asm, i) => {
-                        valueTrackingHtml += `
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed py-2 small fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-${i}">
-                                        ${asm.name} <span class="ms-auto me-3 badge bg-secondary">Rem: ₹${asm.remainingValue.toLocaleString()} / ₹${asm.allocatedValue.toLocaleString()}</span>
-                                    </button>
-                                </h2>
-                                <div id="flush-${i}" class="accordion-collapse collapse" data-bs-parent="#accValueTracking">
-                                    <div class="accordion-body p-0">
-                                        <ul class="list-group list-group-flush small">`;
-                        asm.subassemblies.forEach(sub => {
-                            let designBadge = sub.deliveryDate 
-                                ? `<span class="badge bg-info text-dark ms-2" style="font-size:0.65rem"><i class="fa fa-pencil-ruler me-1"></i>Drawings: ${sub.deliveryDate} (${sub.deliveryDays}d)</span>` 
-                                : '';
-                            
-                            valueTrackingHtml += `
-                                <li class="list-group-item bg-light d-flex justify-content-between align-items-center">
-                                    <span><i class="fa fa-level-up-alt fa-rotate-90 me-2 text-muted"></i>${sub.name} ${designBadge}</span> 
-                                    <span class="text-danger fw-bold">Rem: ₹${sub.remainingValue.toLocaleString()}</span>
-                                </li>`;
-                        });
-                        valueTrackingHtml += `</ul></div></div></div>`;
-                    });
-                    valueTrackingHtml += `</div>`;
-                    
-                    const monthlyData = this.calculateMonthlyRevenue(p.id);
-                    let monthlyHtml = `
-                        <h6 class="text-primary border-bottom pb-2 mb-2 mt-4 small"><i class="fa fa-calendar-alt me-2"></i>Monthly Revenue Flow</h6>
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered border-primary mb-3 small">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Dispatch Month</th>
-                                        <th class="text-end">Planned (₹)</th>
-                                        <th class="text-end">Dispatched (₹)</th>
-                                        <th class="text-end">Forecast Remaining (₹)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                    `;
-                    
-                    for (const [month, data] of Object.entries(monthlyData)) {
-                        monthlyHtml += `
-                            <tr>
-                                <td><strong>${month}</strong></td>
-                                <td class="text-end text-muted">${data.planned.toLocaleString()}</td>
-                                <td class="text-end text-success">${data.dispatched.toLocaleString()}</td>
-                                <td class="text-end text-danger fw-bold">${data.remaining.toLocaleString()}</td>
-                            </tr>
-                        `;
-                    }
-                    monthlyHtml += `</tbody></table></div>`;
-                    valueTrackingHtml += monthlyHtml;
-                }
-                $('#valueTrackingContainer').html(valueTrackingHtml);
-
-                const logs = p.history.map(h => `
-                    <div class="audit-item">
-                        <div class="fw-bold">${h.action}</div>
-                        <div class="text-muted" style="font-size:0.75rem">${new Date(h.date).toLocaleString()} by ${h.by}</div>
-                    </div>
-                `).join('');
-                $('#auditLogContainer').html(logs);
-                new bootstrap.Modal(document.getElementById('detailsModal')).show();
-            },
-
-            renderTimeline(currentStatus) {
-                const stages = [
-                    'Sales',
-                    'Design',
-                    'Directors',
-                    'Finance',
-                    'COO/VP',
-                    'Kick-Off',
-                    'Planning',
-                    'Drawing Freeze',
-                    'VP Approval',
-                    'Execution'
-                ];
-
-                let activeIndex = 0;
-                switch(currentStatus) {
-                    case CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO: activeIndex = 0; break;
-                    case CONSTANTS.STATUS.PENDING_DIRECTOR_DECISION: activeIndex = 1; break;
-                    case CONSTANTS.STATUS.AWAITING_ADVANCE: activeIndex = 2; break;
-                    case CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT: activeIndex = 3; break;
-                    case CONSTANTS.STATUS.PENDING_KICKOFF: activeIndex = 4; break;
-                    case CONSTANTS.STATUS.PLANNING_BILLING_PENDING: activeIndex = 5; break; 
-                    case CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING: activeIndex = 6; break; 
-                    case CONSTANTS.STATUS.VP_DRAWING_APPROVAL_PENDING: activeIndex = 7; break; 
-                    case CONSTANTS.STATUS.EXECUTION_READY: activeIndex = 9; break; 
-                    case CONSTANTS.STATUS.ACTIVE: activeIndex = 9; break; 
-                    case CONSTANTS.STATUS.BLOCKED_NO_APPROVAL: activeIndex = 2; break; 
-                    default: activeIndex = 0;
-                }
-
-                let html = '<ul class="step-wizard-list">';
-                stages.forEach((label, index) => {
-                    let className = 'step-wizard-item';
-                    let content = index + 1;
-                    
-                    if (index <= activeIndex) {
-                        className += ' completed-item';
-                        content = '<i class="fa fa-check"></i>';
-                    } else if (index === activeIndex + 1) {
-                        className += ' current-item';
-                    }
-
-                    html += `
-                        <li class="${className}">
-                            <span class="progress-count">${content}</span>
-                            <span class="progress-label">${label}</span>
-                        </li>`;
-                });
-                html += '</ul>';
-                
-                $('#progressTimeline').html(html);
-            },
-
-            exportPDF() {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('landscape');
-                doc.setFillColor(42, 80, 113); 
-                doc.rect(0, 0, 297, 20, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(14);
-                doc.text('YOGIJI DIGI - Project Realization Status', 14, 13);
-                
-                const rows = this.data.map(p => [
-                    p.code, p.client, p.site, p.status.replace(/_/g, ' '), p.owner, this.calculateSLA(p).text
-                ]);
-
-                doc.autoTable({
-                    head: [['Project No', 'Client', 'Site', 'Stage', 'Owner', 'SLA']],
-                    body: rows,
-                    startY: 25,
-                    headStyles: { fillColor: [42, 80, 113] }
-                });
-                doc.save('YD_Realization_Report.pdf');
-            },
-
-            switchRole(role) {
-                const names = { 
-                    'SALES': 'Sashikanth (Sales)', 
-                    'DESIGN': 'Amit (Design/Engg)',
-                    'DIRECTOR': 'Navneet (Director)', 
-                    'FINANCE': 'Anup (Finance)', 
-                    'VP': 'Varun (VP)', 
-                    'PM': 'Aditya (PM)',
-                    'PLANNING': 'Shivendu (Planning)'
-                };
-                this.currentUser = { role: role, name: names[role] };
-                $('#userRoleDisplay').text(names[role]);
-                
-                if(role === 'SALES') {
-                    $('#btnNewProject').show();
-                } else {
-                    $('#btnNewProject').hide();
-                }
-                this.renderTable();
-            },
-
-            generateDummyData() {
-                const now = new Date();
-                const day = 24 * 60 * 60 * 1000;
-                
-                const dummyStructure = {
-                    totalValue: 55000000,
-                    remainingValue: 50000000,
-                    assemblies: [
-                        {
-                            name: 'Entry Section',
-                            allocatedValue: 20000000,
-                            remainingValue: 15000000,
-                            subassemblies: [
-                                {
-                                    name: 'Payoff Reel',
-                                    allocatedValue: 10000000,
-                                    remainingValue: 5000000,
-                                    deliveryDate: '2026-04-15',
-                                    deliveryDays: '15',
-                                    components: [
-                                        { name: 'Mandrel', plannedValue: 5000000, remainingValue: 0, dispatchedValue: 5000000, dispatchMonth: 'Mar-2026' },
-                                        { name: 'Gearbox', plannedValue: 5000000, remainingValue: 5000000, dispatchedValue: 0, dispatchMonth: 'Apr-2026' }
-                                    ]
-                                },
-                                {
-                                    name: 'Pinch Roll',
-                                    allocatedValue: 10000000,
-                                    remainingValue: 10000000,
-                                    deliveryDate: '2026-04-20',
-                                    deliveryDays: '20',
-                                    components: [
-                                        { name: 'Rolls', plannedValue: 10000000, remainingValue: 10000000, dispatchedValue: 0, dispatchMonth: 'May-2026' }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            name: 'Process Section',
-                            allocatedValue: 35000000,
-                            remainingValue: 35000000,
-                            subassemblies: [
-                                {
-                                    name: 'Furnace',
-                                    allocatedValue: 35000000,
-                                    remainingValue: 35000000,
-                                    deliveryDate: '2026-05-10',
-                                    deliveryDays: '40',
-                                    components: [
-                                        { name: 'Heating Zone', plannedValue: 20000000, remainingValue: 20000000, dispatchedValue: 0, dispatchMonth: 'Jun-2026' },
-                                        { name: 'Cooling Zone', plannedValue: 15000000, remainingValue: 15000000, dispatchedValue: 0, dispatchMonth: 'Jul-2026' }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                };
-
-                return [
-                    { id: 2605, code: 'PENDING-2605', tempId: 'PENDING-2605', projectNo: null, client: 'JTL', site: 'Jamshedpur', machine: 'CRM', poValue: null, soNum: 'SO-105', terms: null, status: CONSTANTS.STATUS.AWAITING_DESIGN_PROJECT_NO, owner: 'DESIGN', ownerRole: 'Design Team', stageDate: new Date(now - 0.5*day).toISOString(), history: [{ action: 'Workflow Initiated (Sales)', by: 'Sashikanth (Sales)', date: new Date(now - 0.5*day).toISOString() }] },
-                    { id: 2601, code: '2601-BMWIL-CGL', tempId: '2601-BMWIL-CGL', projectNo: '2601-BMWIL-CGL', client: 'BMWIL', site: 'Mumbai', machine: 'CGL', poValue: '4500000', soNum: 'SO-101', terms: '30% Adv', status: CONSTANTS.STATUS.PENDING_DIRECTOR_DECISION, owner: 'DIRECTOR', ownerRole: 'Management', stageDate: new Date(now - 1.5*day).toISOString(), history: [{action: 'Workflow Initiated', by: 'Sales', date: new Date(now - 2*day).toISOString()}, {action: 'Project Number Allocated: 2601-BMWIL-CGL', by: 'Design', date: new Date(now - 1.5*day).toISOString()}] },
-                    { id: 2602, code: '2602-APL-PICK', tempId: '2602-APL-PICK', projectNo: '2602-APL-PICK', client: 'APOLLO', site: 'Raipur', machine: 'Pickling', poValue: '12000000', soNum: 'SO-102', terms: '10% Adv', status: CONSTANTS.STATUS.AWAITING_ADVANCE, owner: 'FINANCE', ownerRole: 'Accounts', stageDate: new Date(now - 10*day).toISOString(), history: [{action: 'Decision: Proceed WITH Advance', by: 'Director', date: new Date(now - 10*day).toISOString()}] },
-                    { id: 2603, code: '2603-JSW-TRIM', tempId: '2603-JSW-TRIM', projectNo: '2603-JSW-TRIM', client: 'JSW', site: 'Bellary', machine: 'Trimming', poValue: '8500000', soNum: 'SO-103', terms: 'LC 90 Days', status: CONSTANTS.STATUS.PENDING_PM_ASSIGNMENT, owner: 'VP', ownerRole: 'COO/VP', stageDate: new Date(now - 1*day).toISOString(), history: [{action: 'Advance clocked', by: 'Finance', date: new Date(now - 1*day).toISOString()}] },
-                    { id: 2609, code: '2609-JSW-CGL2', tempId: '2609-JSW-CGL2', projectNo: '2609-JSW-CGL2', client: 'JSW', site: 'Vasind', machine: 'CGL 2', poValue: '55000000', soNum: 'SO-099', terms: 'LC', status: CONSTANTS.STATUS.ACTIVE, owner: 'Operations', ownerRole: 'Execution', stageDate: new Date(now - 30*day).toISOString(), structure: dummyStructure, history: [{action: 'Project kicked off', by: 'PM', date: new Date(now - 30*day).toISOString()}] },
-                    // New dummy project stuck at Design Drawing Freeze
-                    { id: 2610, code: '2610-SHYAM-CRM', tempId: '2610-SHYAM-CRM', projectNo: '2610-SHYAM-CRM', client: 'SHYAM', site: 'Durgapur', machine: 'CRM', poValue: '40000000', soNum: 'SO-110', terms: '20% Adv', status: CONSTANTS.STATUS.DESIGN_DRAWING_FREEZE_PENDING, owner: 'DESIGN', ownerRole: 'Design Team', stageDate: new Date(now - 1*day).toISOString(), structure: JSON.parse(JSON.stringify(dummyStructure)), history: [{action: 'Tentative Billing Schedule Uploaded', by: 'Planning', date: new Date(now - 1*day).toISOString()}] }
-                ];
-            },
-            
-            updateUI() {
-                this.switchRole('SALES');
+        // --- 1. DARK MODE TOGGLE ---
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if(document.body.classList.contains('dark-mode')){
+                themeToggle.innerHTML = '☀️ Light Mode';
+            } else {
+                themeToggle.innerHTML = '🌙 Dark Mode';
             }
-        };
+        });
 
-        $(document).ready(() => { app.init(); });
+        // --- 2. MOBILE TAP-TO-EXPAND (ACCORDION) ---
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const header = card.querySelector('.card-header');
+            if(header) {
+                header.addEventListener('click', () => {
+                    // Only active on mobile dimensions
+                    if (window.innerWidth <= 1024) {
+                        // Optional: Close other cards when one is clicked (Accordion style)
+                        cards.forEach(c => {
+                            if(c !== card) c.classList.remove('active');
+                        });
+                        // Toggle current card
+                        card.classList.toggle('active');
+                        
+                        // Scroll to the active card smoothly
+                        if(card.classList.contains('active')) {
+                            setTimeout(() => {
+                                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 300); // slight delay to allow CSS transition
+                        }
+                    }
+                });
+            }
+        });
+
+        // --- 3. LIVE SCROLL PROGRESS TRACKER (Mobile Only) ---
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth <= 1024) {
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const progress = (scrollTop / scrollHeight) * 100;
+                document.getElementById('progressBar').style.width = progress + '%';
+            }
+        });
     </script>
-  </body>
+
+</body>
 </html>
