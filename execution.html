@@ -141,14 +141,14 @@
 
         .title-box { text-align: right; }
         .title-box h1 {
-            font-size: clamp(1.1rem, 1.6vw, 2.2rem);
+            font-size: clamp(1rem, 1.4vw, 1.8rem); /* Slightly scaled down to fit more vertical space if needed */
             color: var(--yd-red);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 0.2vh;
         }
         .title-box p {
-            font-size: clamp(0.85rem, 1vw, 1.2rem);
+            font-size: clamp(0.75rem, 0.9vw, 1.1rem);
             color: var(--yd-grey);
             font-weight: 600;
         }
@@ -181,13 +181,17 @@
             position: relative;
         }
 
-        /* Grid Areas Mapping */
+        /* Grid Areas Mapping - UP/DOWN ZigZag Pattern */
         .stage-6 { grid-column: 1; grid-row: 1; }
-        .stage-7 { grid-column: 2; grid-row: 1; }
-        .stage-8 { grid-column: 3; grid-row: 1; }
-        .stage-9 { grid-column: 4; grid-row: 1; }
-        .stage-10 { grid-column: 5; grid-row: 1; }
-        .stage-11 { grid-column: 5; grid-row: 2; }
+        .stage-7 { grid-column: 1; grid-row: 2; }
+        .stage-8 { grid-column: 2; grid-row: 1; }
+        .stage-9 { grid-column: 2; grid-row: 2; }
+        .stage-10 { grid-column: 3; grid-row: 1; }
+        .stage-11 { grid-column: 3; grid-row: 2; }
+        .stage-12 { grid-column: 4; grid-row: 1; }
+        .stage-13 { grid-column: 4; grid-row: 2; }
+        .stage-14 { grid-column: 5; grid-row: 1; }
+        .stage-15 { grid-column: 5; grid-row: 2; }
 
         /* === CARD STYLING === */
         .card {
@@ -196,7 +200,7 @@
             border: 1px solid rgba(175, 32, 45, 0.2);
             border-top: 4px solid var(--yd-grey);
             border-radius: 12px;
-            padding: 1.2vh 1vw;
+            padding: 1vh 0.8vw; /* Reduced padding slightly to ensure single screen fit */
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
@@ -205,6 +209,7 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s, border 0.4s;
             opacity: 0;
             animation: fadeUp 0.8s forwards;
+            overflow: hidden;
         }
 
         .card:hover {
@@ -217,26 +222,30 @@
 
         /* Delays & Specific Stage Formatting */
         .stage-6 { animation-delay: 0.1s; border-top-color: var(--yd-red); }
-        .stage-7 { animation-delay: 0.2s; border-top-color: var(--yd-grey); }
+        .stage-7 { animation-delay: 0.15s; border-top-color: var(--yd-grey); }
         /* Stage 8 - The Approval Gate */
         .stage-8 { 
-            animation-delay: 0.3s; 
+            animation-delay: 0.2s; 
             border: 2px solid var(--yd-red); 
             border-top: 5px solid var(--yd-red);
             box-shadow: 0 0 15px rgba(175, 32, 45, 0.1); 
         }
-        .stage-9 { animation-delay: 0.4s; border-top-color: var(--yd-grey); }
-        .stage-10 { animation-delay: 0.5s; border-top-color: var(--yd-grey); }
-        .stage-11 { animation-delay: 0.6s; border-top-color: var(--success-green); }
+        .stage-9 { animation-delay: 0.25s; border-top-color: var(--yd-grey); }
+        .stage-10 { animation-delay: 0.3s; border-top-color: var(--yd-grey); }
+        .stage-11 { animation-delay: 0.35s; border-top-color: var(--yd-grey); }
+        .stage-12 { animation-delay: 0.4s; border-top-color: var(--yd-grey); }
+        .stage-13 { animation-delay: 0.45s; border-top-color: var(--yd-grey); }
+        .stage-14 { animation-delay: 0.5s; border-top-color: var(--yd-grey); }
+        .stage-15 { animation-delay: 0.55s; border-top-color: var(--success-green); }
 
         /* Typography Inside Cards */
         .card-header {
-            font-size: clamp(0.9rem, 1.1vw, 1.3rem);
+            font-size: clamp(0.7rem, 0.85vw, 1.1rem);
             font-weight: 800;
             color: var(--yd-red);
             border-bottom: 1px solid rgba(175, 32, 45, 0.2);
             padding-bottom: 0.5vh;
-            margin-bottom: 0.8vh;
+            margin-bottom: 0.5vh;
             text-transform: uppercase;
             display: flex;
             justify-content: space-between;
@@ -251,29 +260,30 @@
             flex-grow: 1;
             transition: max-height 0.4s ease, opacity 0.3s ease;
             overflow: hidden;
+            justify-content: space-between;
         }
 
         .roster {
             background: rgba(128, 128, 128, 0.08);
-            padding: 0.8vh 0.6vw;
+            padding: 0.5vh 0.5vw;
             border-radius: 6px;
-            margin-bottom: 0.8vh;
+            margin-bottom: 0.5vh;
             border-left: 3px solid var(--yd-grey);
             transition: border-color 0.3s;
         }
         .card:hover .roster { border-left-color: var(--yd-red); }
 
         .roster-title {
-            font-size: clamp(0.75rem, 0.9vw, 1rem);
+            font-size: clamp(0.65rem, 0.75vw, 0.9rem);
             color: var(--yd-grey);
             font-weight: 700;
-            margin-bottom: 0.3vh;
+            margin-bottom: 0.2vh;
             text-transform: uppercase;
         }
 
         .names {
             list-style: none;
-            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
+            font-size: clamp(0.6rem, 0.7vw, 0.85rem);
             color: var(--text-main);
             font-weight: 600;
         }
@@ -294,59 +304,25 @@
         }
 
         .action-text {
-            font-size: clamp(0.7rem, 0.85vw, 1rem);
+            font-size: clamp(0.65rem, 0.75vw, 0.9rem);
             color: var(--text-muted);
             line-height: 1.3;
             flex-grow: 1;
-        }
-        .action-text strong { color: var(--text-main); }
-        .action-text ul { padding-left: 1vw; margin-top: 0.5vh; }
-
-        /* === SPLIT PARALLEL TRACKS (STAGE 9) === */
-        .parallel-split {
-            display: flex;
-            gap: 0.8vw;
-            flex-grow: 1;
-            margin-top: 0.5vh;
-        }
-        .split-track {
-            flex: 1;
-            background: rgba(90, 99, 96, 0.04);
-            border-radius: 6px;
-            padding: 0.8vh 0.6vw;
-            border-top: 3px solid var(--yd-grey);
             display: flex;
             flex-direction: column;
-            transition: border-color 0.3s;
+            justify-content: center;
         }
-        .card:hover .split-track { border-top-color: var(--yd-red); }
-        
-        .track-title {
-            font-size: clamp(0.65rem, 0.75vw, 0.9rem);
-            color: var(--yd-red);
-            font-weight: 800;
-            text-transform: uppercase;
-            text-align: center;
-            border-bottom: 1px dashed rgba(175, 32, 45, 0.2);
-            padding-bottom: 0.3vh;
-            margin-bottom: 0.5vh;
-        }
-        .track-content {
-            font-size: clamp(0.65rem, 0.75vw, 0.9rem);
-            color: var(--text-muted);
-            line-height: 1.2;
-        }
-        .track-content ul { padding-left: 1vw; margin-top: 0.2vh; margin-bottom: 0; }
-        .track-content li { margin-bottom: 2px; }
+        .action-text strong { color: var(--text-main); }
+        .action-text ul { padding-left: 1.2vw; margin-top: 0.3vh; margin-bottom: 0.3vh;}
 
         /* SLA Alert Boxes */
         .sla-box {
             margin-top: auto;
             background: rgba(175, 32, 45, 0.05);
             border: 1px dashed var(--yd-red);
-            padding: 0.6vh 0.8vw;
+            padding: 0.4vh 0.6vw;
             border-radius: 6px;
-            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
+            font-size: clamp(0.6rem, 0.7vw, 0.85rem);
             color: var(--yd-dark-red);
             transition: background 0.3s;
         }
@@ -360,15 +336,15 @@
         /* === EXCEL-LIKE GRID STYLING === */
         .excel-grid-container {
             overflow-x: auto;
-            margin-top: 1vh;
-            margin-bottom: 1vh;
+            margin-top: 0.5vh;
+            margin-bottom: 0.5vh;
             border-radius: 4px;
             border: 1px solid rgba(175, 32, 45, 0.2);
         }
         .excel-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: clamp(0.65rem, 0.75vw, 0.85rem);
+            font-size: clamp(0.6rem, 0.7vw, 0.85rem);
             background: rgba(255, 255, 255, 0.6);
         }
         body.dark-mode .excel-table {
@@ -376,7 +352,7 @@
         }
         .excel-table th, .excel-table td {
             border: 1px solid rgba(90, 99, 96, 0.2);
-            padding: 3px 6px;
+            padding: 2px 4px;
             text-align: left;
         }
         .excel-table th {
@@ -394,7 +370,7 @@
             border: 1px solid rgba(90, 99, 96, 0.3);
             background: #fff;
             color: var(--text-main);
-            padding: 2px 4px;
+            padding: 1px 2px;
             border-radius: 2px;
             font-size: inherit;
             transition: all 0.2s;
@@ -436,22 +412,31 @@
         .footer-note { font-weight: 400; text-align: center; padding: 0 10px; }
         .footer-note strong { font-weight: 700; color: #ffcccc; }
 
-        /* === ANIMATED FLOW ARROWS (Desktop) === */
+        /* === ANIMATED FLOW ARROWS (Desktop ZigZag) === */
         .arrow {
             position: absolute;
             color: var(--yd-red);
-            font-size: clamp(1.5rem, 2vw, 2.5rem);
+            font-size: clamp(1.2rem, 1.5vw, 2rem);
             z-index: 10;
-            animation: flowMove 2s infinite ease-in-out;
             pointer-events: none;
             text-shadow: 0 0 5px rgba(175, 32, 45, 0.4);
         }
 
-        .arrow-6-7 { top: 50%; right: -1vw; transform: translateY(-50%); }
-        .arrow-7-8 { top: 50%; right: -1vw; transform: translateY(-50%); }
-        .arrow-8-9 { top: 50%; right: -1vw; transform: translateY(-50%); }
-        .arrow-9-10 { top: 50%; right: -1vw; transform: translateY(-50%); }
-        .arrow-10-11 { bottom: -2vh; left: 50%; transform: translateX(-50%) rotate(90deg); animation: flowDown 2s infinite ease-in-out;}
+        /* Forward Downwards (6->7, 8->9, 10->11, 12->13, 14->15) */
+        .arrow-down { 
+            bottom: -2.5vh; 
+            left: 50%; 
+            transform: translateX(-50%) rotate(90deg); 
+            animation: flowDown 2s infinite ease-in-out; 
+        }
+
+        /* Forward Diagonal Up-Right (7->8, 9->10, 11->12, 13->14) */
+        .arrow-up-right { 
+            top: -2vh; 
+            right: -1.5vw; 
+            transform: rotate(-45deg); 
+            animation: flowDiagonal 2s infinite ease-in-out; 
+        }
 
         /* === KEYFRAMES === */
         @keyframes fadeUp {
@@ -463,15 +448,15 @@
             70% { box-shadow: 0 0 0 8px rgba(175, 32, 45, 0); }
             100% { box-shadow: 0 0 0 0 rgba(175, 32, 45, 0); }
         }
-        @keyframes flowMove {
-            0% { transform: translate(0, -50%); opacity: 0.6; }
-            50% { transform: translate(6px, -50%); opacity: 1; text-shadow: 0 0 10px var(--yd-red);}
-            100% { transform: translate(0, -50%); opacity: 0.6; }
-        }
         @keyframes flowDown {
             0% { transform: translate(-50%, 0) rotate(90deg); opacity: 0.6; }
             50% { transform: translate(-50%, 6px) rotate(90deg); opacity: 1; text-shadow: 0 0 10px var(--yd-red);}
             100% { transform: translate(-50%, 0) rotate(90deg); opacity: 0.6; }
+        }
+        @keyframes flowDiagonal {
+            0% { transform: translate(0, 0) rotate(-45deg); opacity: 0.6; }
+            50% { transform: translate(6px, -6px) rotate(-45deg); opacity: 1; text-shadow: 0 0 10px var(--yd-red);}
+            100% { transform: translate(0, 0) rotate(-45deg); opacity: 0.6; }
         }
         @keyframes slideInLeft {
             from { opacity: 0; transform: translateX(-30px); }
@@ -540,7 +525,7 @@
             }
             
             .card.active .collapsible-content {
-                max-height: 1200px; /* Increased to allow content space including grid and splits */
+                max-height: 1200px;
                 opacity: 1;
                 margin-top: 1vh;
             }
@@ -548,14 +533,8 @@
                 transform: rotate(180deg);
             }
 
-            /* Stack Parallel Splits on Mobile */
-            .parallel-split {
-                flex-direction: column;
-                gap: 1.5vh;
-            }
-
             /* Remove complex grid placement */
-            .stage-6, .stage-7, .stage-8, .stage-9, .stage-10, .stage-11 {
+            .stage-6, .stage-7, .stage-8, .stage-9, .stage-10, .stage-11, .stage-12, .stage-13, .stage-14, .stage-15 {
                 grid-column: auto !important;
                 grid-row: auto !important;
             }
@@ -576,7 +555,7 @@
             }
 
             /* Remove arrow after the last element */
-            .stage-11::after { display: none; }
+            .stage-15::after { display: none; }
 
             footer {
                 height: auto;
@@ -618,7 +597,7 @@
     <main>
         
         <div class="card stage-6 active">
-            <div class="card-header">STAGE 6: Tentative Billing Schedule <span class="toggle-icon">▼</span></div>
+            <div class="card-header">STAGE 6: Billing Sch. <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Planning & Forecasting</div>
@@ -627,21 +606,21 @@
                     </ul>
                 </div>
                 <div class="action-text">
-                    Assemblies created via Excel Input:<br><br>
+                    Assemblies created via Excel:<br>
                     • <strong>Dispatch Month</strong> assigned<br>
-                    • <strong>Tentative Billing Value</strong> assigned<br>
+                    • <strong>Tentative Billing</strong> assigned<br>
                     • <strong>Treated as</strong> Master
                 </div>
                  <div class="sla-box">
                     ⏱️ SLA: <strong>7 Days</strong><br>
-                    ⚠️ Escalate: Mr. Navneet Singh & Mr. Sameer Bansal
+                    ⚠️ Escalate: Mr. N. Singh & Mr. S. Bansal
                 </div>
             </div>
-            <div class="arrow arrow-6-7">➔</div>
+            <div class="arrow arrow-down">➔</div>
         </div>
 
         <div class="card stage-7">
-            <div class="card-header">STAGE 7: Design Planning <span class="toggle-icon">▼</span></div>
+            <div class="card-header">STAGE 7: Design Plan <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Design Team</div>
@@ -649,8 +628,8 @@
                         <li>Design Lead</li>
                     </ul>
                 </div>
-                <div class="action-text" style="flex-grow: 0; margin-bottom: 5px;">
-                    Technical structure mapping. Design team fills Delivery Schedule.
+                <div class="action-text" style="flex-grow: 0;">
+                    Technical structure mapping. Fill Delivery Schedule.
                 </div>
                 
                 <div class="excel-grid-container">
@@ -659,33 +638,30 @@
                             <tr>
                                 <th>Assembly</th>
                                 <th>Delivery Date</th>
-                                <th>Days</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Main Frame</td>
                                 <td><input type="date" class="excel-input"></td>
-                                <td><input type="number" class="excel-input" placeholder="Days"></td>
                             </tr>
                             <tr>
                                 <td>Drive Unit</td>
                                 <td><input type="date" class="excel-input"></td>
-                                <td><input type="number" class="excel-input" placeholder="Days"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                  <div class="sla-box">
                     ⏱️ SLA: <strong>10 Days</strong><br>
-                    ⚠️ Escalate: Mr. Navneet Singh & Mr. Sameer Bansal
+                    ⚠️ Escalate: Mr. N. Singh & Mr. S. Bansal
                 </div>
             </div>
-            <div class="arrow arrow-7-8">➔</div>
+            <div class="arrow arrow-up-right">➔</div>
         </div>
 
         <div class="card stage-8">
-            <div class="card-header" style="color:var(--yd-red);">STAGE 8: Approval Gate <span class="toggle-icon">▼</span></div>
+            <div class="card-header" style="color:var(--yd-red);">STAGE 8: Approval <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Review & Sign-Off</div>
@@ -695,59 +671,124 @@
                 </div>
                 <div class="action-text">
                     Review tentative design delivery dates.<br><br>
-                    • Can modify dates<br>
-                    • Once approved ➔ <strong>LOCKED</strong><br><br>
-                    <em>Unlocks Phase 2 (Parallel Execution)</em>
+                    Once approved, all delivery dates are <strong style="color:var(--yd-red);">🔒 LOCKED</strong> and cannot be modified.<br><br>
+                    <em>Unlocks Execution Phase</em>
                 </div>
                 <div class="sla-box">
                     ⏱️ SLA: <strong>2 Days</strong><br>
-                    ⚠️ Escalate: Mr. Navneet Singh & Mr. Sameer Bansal
+                    ⚠️ Escalate: Mr. N. Singh & Mr. S. Bansal
                 </div>
             </div>
-            <div class="arrow arrow-8-9">➔</div>
+            <div class="arrow arrow-down">➔</div>
         </div>
 
         <div class="card stage-9">
-            <div class="card-header">STAGE 9: Execution (Parallel) <span class="toggle-icon">▼</span></div>
+            <div class="card-header">STAGE 9: Design Exec. <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
-                
-                <div class="parallel-split">
-                    <div class="split-track">
-                        <div class="track-title">Track A: Design</div>
-                        <div class="track-content">
-                            <strong>Continuous Flow:</strong><br>
-                            • Upload Drawings<br>
-                            • Add BOM details:<br>
-                            <ul>
-                                <li>Drawing No.</li>
-                                <li>Quantity</li>
-                                <li>Material</li>
-                                <li>Weight</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="split-track">
-                        <div class="track-title">Track B: Proj. Mgr</div>
-                        <div class="track-content">
-                            <strong>Execution Flow:</strong><br>
-                            • Vendor Name<br>
-                            • PO Number<br>
-                            • Price<br>
-                            • Procurement Mgmt<br>
-                            • Vendor Allocation<br>
-                            • Manufacturing Tracking<br>
-                            • Assembly Execution
-                        </div>
-                    </div>
+                <div class="roster">
+                    <div class="roster-title">Design Engineering</div>
+                    <ul class="names">
+                        <li>Design Team</li>
+                    </ul>
                 </div>
-
+                <div class="action-text">
+                    <strong>Assembly ➔ Subassembly ➔ Drawings</strong><br><br>
+                    • Upload drawings (Filename = Drawing No.)<br>
+                    • Enter details per drawing:
+                    <ul>
+                        <li>Description (Component Name)</li>
+                        <li>Quantity, Material, Weight</li>
+                    </ul>
+                </div>
+                <div class="sla-box">
+                    ⏱️ SLA: <strong>Design Release Date</strong><br>
+                    ⚠️ If missed: Impacts project delivery & triggers escalation.
+                </div>
             </div>
-            <div class="arrow arrow-9-10">➔</div>
+            <div class="arrow arrow-up-right">➔</div>
         </div>
 
         <div class="card stage-10">
-            <div class="card-header">STAGE 10: Dispatch <span class="toggle-icon">▼</span></div>
+            <div class="card-header">STAGE 10: Proj. Mgr <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Project Management</div>
+                    <ul class="names">
+                        <li>Project Manager</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    • View & download engineering drawings.<br>
+                    • Enter: Vendor Name, PO Number, Price, Delivery Date, Status.<br>
+                    • Responsibilities: Procurement management, Vendor allocation, Mfg tracking, Assembly coordination.
+                </div>
+                <div class="sla-box">
+                    ⏱️ SLA: <strong>Delivery Date</strong><br>
+                    ⚠️ If missed: Impacts project end date & triggers escalation.
+                </div>
+            </div>
+            <div class="arrow arrow-down">➔</div>
+        </div>
+
+        <div class="card stage-11">
+            <div class="card-header">STAGE 11: Assembly <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Assembly Team</div>
+                    <ul class="names">
+                        <li>Shop Floor Engineers</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    <strong>Hierarchy Execution:</strong><br>
+                    Components ➔ Subassemblies ➔ Assemblies ➔ Full Kit<br><br>
+                    • Final assembly execution happens here.<br>
+                    • Kit readiness for quality control.
+                </div>
+            </div>
+            <div class="arrow arrow-up-right">➔</div>
+        </div>
+
+        <div class="card stage-12">
+            <div class="card-header">STAGE 12: Inspection <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Quality Control</div>
+                    <ul class="names">
+                        <li>QC Inspectors</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Quality assessment of final assembled kit.<br><br>
+                    • Detailed quality checks<br>
+                    • Defect resolution<br>
+                    • Approval required before dispatch
+                </div>
+            </div>
+            <div class="arrow arrow-down">➔</div>
+        </div>
+
+        <div class="card stage-13">
+            <div class="card-header">STAGE 13: Invoicing <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Finance & Billing</div>
+                    <ul class="names">
+                        <li>Billing Executive</li>
+                    </ul>
+                </div>
+                <div class="action-text">
+                    Commercial document preparation.<br><br>
+                    • Invoice generation<br>
+                    • Billing alignment with dispatch schedule<br>
+                    • Tax and duty documentation
+                </div>
+            </div>
+            <div class="arrow arrow-up-right">➔</div>
+        </div>
+
+        <div class="card stage-14">
+            <div class="card-header">STAGE 14: Dispatch <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Logistics Team</div>
@@ -756,29 +797,29 @@
                     </ul>
                 </div>
                 <div class="action-text">
-                    Physical movement and logistics completion.<br><br>
-                    • Packing List Gen.<br>
-                    • Transport Arrangement<br>
-                    • Final Physical Dispatch
+                    Physical movement and transport logistics.<br><br>
+                    • Packing + transport preparation<br>
+                    • Logistics execution<br>
+                    • Final physical handover
                 </div>
             </div>
-            <div class="arrow arrow-10-11">➔</div>
+            <div class="arrow arrow-down">➔</div>
         </div>
 
-        <div class="card stage-11" style="background: rgba(39, 174, 96, 0.05); border: 1px solid var(--success-green); box-shadow: inset 0 0 20px rgba(39, 174, 96, 0.05);">
-            <div class="card-header" style="color: var(--success-green); border-bottom: none;">STAGE 11: Finance Closure <span class="toggle-icon" style="color:var(--success-green);">▼</span></div>
+        <div class="card stage-15" style="background: rgba(39, 174, 96, 0.05); border: 1px solid var(--success-green); box-shadow: inset 0 0 20px rgba(39, 174, 96, 0.05);">
+            <div class="card-header" style="color: var(--success-green); border-bottom: none;">STAGE 15: Accounts <span class="toggle-icon" style="color:var(--success-green);">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster" style="background: transparent; border-left-color: var(--success-green);">
-                    <div class="roster-title" style="color: var(--success-green);">Finance Team</div>
+                    <div class="roster-title" style="color: var(--success-green);">Accounts Receivable</div>
                     <ul class="names">
-                        <li>Accounts & Billing</li>
+                        <li>Finance Head</li>
                     </ul>
                 </div>
                 <div class="action-text">
                     ✅ <strong>Project Lifecycle Success</strong><br><br>
-                    • Accounts Receivable Logged<br>
-                    • Final Payment Collection<br>
-                    • Financial Project Closure Complete
+                    • Payment tracking<br>
+                    • Financial realization<br>
+                    • Final project closure
                 </div>
             </div>
         </div>
