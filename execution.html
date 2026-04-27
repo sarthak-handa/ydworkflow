@@ -14,7 +14,7 @@
             --yd-dark-red: #821520;
             --yd-grey: #5A6360;
             --yd-light-grey: #f4f6f8;
-            --arrow-color: rgba(175, 32, 45, 0.65); /* Faded red to match uploaded image */
+            --arrow-color: rgba(175, 32, 45, 0.65);
             --bg-gradient: radial-gradient(circle at top right, #ffffff, #e3e8ec);
             --grid-color: rgba(90, 99, 96, 0.05);
             --card-bg: rgba(255, 255, 255, 0.75);
@@ -77,7 +77,7 @@
 
         .title-box { text-align: right; }
         .title-box h1 { font-size: clamp(1rem, 1.4vw, 1.8rem); color: var(--yd-red); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.2vh; }
-        .title-box p { font-size: clamp(0.75rem, 0.9vw, 1.1rem); color: var(--yd-grey); font-weight: 600; }
+        .title-box p { font-size: clamp(0.75rem, 0.9vw, 1.1rem); color: var(--yd-grey); font-weight: 600; transition: all 0.3s; }
 
         /* === PROGRESS INDICATOR === */
         .progress-container { display: none; width: 100%; height: 4px; background: var(--yd-light-grey); position: sticky; top: 0; z-index: 99; }
@@ -94,13 +94,28 @@
             position: relative;
         }
 
-        /* Grid Areas Mapping */
-        .stage-6 { grid-column: 1; grid-row: 1; }
-        .stage-7 { grid-column: 2; grid-row: 1; }
-        .stage-8a { grid-column: 3; grid-row: 1; } /* Billing - Dead End */
-        .stage-8b { grid-column: 4; grid-row: 1; } /* Dispatch - Continues */
-        .stage-9 { grid-column: 4; grid-row: 2; }  /* Below Dispatch */
-        .stage-10 { grid-column: 3; grid-row: 2; } /* Left of Stage 9 */
+        /* Grid Areas Mapping (Initiation Phase) */
+        .init-1 { grid-column: 1; grid-row: 1; animation-delay: 0.1s; border-top-color: var(--yd-red); }
+        .init-2 { grid-column: 2; grid-row: 1; animation-delay: 0.15s; border-top-color: var(--yd-grey); }
+        .init-3 { grid-column: 3; grid-row: 1; animation-delay: 0.2s; border-top-color: var(--yd-grey); }
+        .init-4 { grid-column: 4; grid-row: 1; animation-delay: 0.2s; border-top-color: var(--yd-grey); }
+        .init-5 { grid-column: 4; grid-row: 2; animation-delay: 0.3s; border: 2px solid var(--yd-red); border-top: 5px solid var(--yd-red); box-shadow: 0 0 15px rgba(175, 32, 45, 0.1); }
+        
+        /* Grid Areas Mapping (Execution Phase) */
+        .stage-6 { grid-column: 1; grid-row: 1; animation-delay: 0.1s; border-top-color: var(--yd-red); }
+        .stage-7 { grid-column: 2; grid-row: 1; animation-delay: 0.15s; border-top-color: var(--yd-grey); }
+        .stage-8a { grid-column: 3; grid-row: 1; animation-delay: 0.2s; border-top-color: var(--yd-grey); } 
+        .stage-8b { grid-column: 4; grid-row: 1; animation-delay: 0.2s; border-top-color: var(--yd-grey); } 
+        .stage-9 { grid-column: 4; grid-row: 2; animation-delay: 0.3s; border: 2px solid var(--yd-red); border-top: 5px solid var(--yd-red); box-shadow: 0 0 15px rgba(175, 32, 45, 0.1); }
+        .stage-10 { grid-column: 3; grid-row: 2; animation-delay: 0.35s; border-top-color: var(--success-green); } 
+
+        /* Grid Areas Mapping (Completion Phase) */
+        .comp-10 { grid-column: 1; grid-row: 1; animation-delay: 0.1s; border-top-color: var(--yd-red); }
+        .comp-11 { grid-column: 2; grid-row: 1; animation-delay: 0.15s; border-top-color: var(--yd-grey); }
+        .comp-12 { grid-column: 3; grid-row: 1; animation-delay: 0.2s; border-top-color: var(--yd-grey); }
+        .comp-13 { grid-column: 4; grid-row: 1; animation-delay: 0.2s; border-top-color: var(--yd-grey); }
+        .comp-15 { grid-column: 4; grid-row: 2; animation-delay: 0.3s; border: 2px solid var(--yd-red); border-top: 5px solid var(--yd-red); box-shadow: 0 0 15px rgba(175, 32, 45, 0.1); }
+        .comp-14 { grid-column: 3; grid-row: 2; animation-delay: 0.35s; border-top-color: var(--success-green); }
 
         /* === CARD STYLING === */
         .card {
@@ -112,13 +127,6 @@
         }
 
         .card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 15px 30px rgba(175, 32, 45, 0.15); border-color: var(--yd-red); border-top-color: var(--yd-red); z-index: 50; }
-
-        .stage-6 { animation-delay: 0.1s; border-top-color: var(--yd-red); }
-        .stage-7 { animation-delay: 0.15s; border-top-color: var(--yd-grey); }
-        .stage-8a { animation-delay: 0.2s; border-top-color: var(--yd-grey); }
-        .stage-8b { animation-delay: 0.2s; border-top-color: var(--yd-grey); }
-        .stage-9 { animation-delay: 0.3s; border: 2px solid var(--yd-red); border-top: 5px solid var(--yd-red); box-shadow: 0 0 15px rgba(175, 32, 45, 0.1); }
-        .stage-10 { animation-delay: 0.35s; border-top-color: var(--success-green); }
 
         .card-header { font-size: clamp(0.7rem, 0.85vw, 1rem); font-weight: 800; color: var(--yd-red); border-bottom: 1px solid rgba(175, 32, 45, 0.2); padding-bottom: 0.5vh; margin-bottom: 1vh; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
         .toggle-icon { display: none; font-size: 1rem; color: var(--yd-red); transition: transform 0.3s; }
@@ -132,9 +140,9 @@
         .names li { transition: transform 0.2s ease, color 0.2s ease; cursor: pointer; }
         .names li:hover { transform: translateX(4px); color: var(--yd-red); }
 
-        .action-text { font-size: clamp(0.6rem, 0.7vw, 0.85rem); color: var(--text-muted); line-height: 1.4; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .action-text strong { color: var(--text-main); }
-        .action-text ul { padding-left: 1.2vw; margin-top: 0.5vh; margin-bottom: 0.5vh;}
+        .action-text { font-size: clamp(0.6rem, 0.7vw, 0.85rem); color: var(--text-muted); line-height: 1.4; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 1vh; }
+        .action-text strong { color: var(--yd-red); font-weight: 700; letter-spacing: 0.5px; }
+        .action-text ul { padding-left: 1.2vw; margin-top: 0.2vh; margin-bottom: 0.2vh;}
 
         .sla-box { margin-top: auto; background: rgba(175, 32, 45, 0.05); border: 1px dashed var(--yd-red); padding: 0.6vh 0.8vw; border-radius: 6px; font-size: clamp(0.55rem, 0.65vw, 0.8rem); color: var(--yd-dark-red); transition: background 0.3s; }
         body.dark-mode .sla-box { color: #ff8c94; background: rgba(175, 32, 45, 0.15); }
@@ -142,7 +150,6 @@
 
         /* === ANIMATED FLOW ARROWS (IMAGE STYLE) === */
         
-        /* 1. Standard Right Arrow */
         .img-arrow-right {
             position: absolute; top: 50%; right: -2.5vw; width: 1.5vw; height: 10px;
             background-color: var(--arrow-color); z-index: 10;
@@ -153,7 +160,6 @@
             border-left: 14px solid var(--arrow-color); border-top: 12px solid transparent; border-bottom: 12px solid transparent;
         }
 
-        /* 2. Standard Down Arrow */
         .img-arrow-down {
             position: absolute; bottom: -3.5vh; left: 50%; width: 10px; height: 1.5vh;
             background-color: var(--arrow-color); z-index: 10;
@@ -164,7 +170,6 @@
             border-top: 14px solid var(--arrow-color); border-left: 14px solid transparent; border-right: 14px solid transparent;
         }
 
-        /* 3. Standard Left Arrow */
         .img-arrow-left {
             position: absolute; top: 50%; left: -2.5vw; width: 1.5vw; height: 10px;
             background-color: var(--arrow-color); z-index: 10;
@@ -175,23 +180,15 @@
             border-right: 14px solid var(--arrow-color); border-top: 12px solid transparent; border-bottom: 12px solid transparent;
         }
 
-        /* 4. The Bridge Arrow (Over top from 7 to 8b) */
         .img-arrow-bridge {
-            position: absolute;
-            top: -3.5vh;
-            left: 50%;
-            /* Calculated: 50% of Col 2 + Gap + 100% of Col 3 + Gap + 50% of Col 4 */
-            width: calc(200% + 5vw); 
-            height: 3.5vh;
-            border-top: 8px solid var(--arrow-color);
-            border-left: 8px solid var(--arrow-color);
-            border-right: 8px solid var(--arrow-color);
-            border-radius: 6px 6px 0 0;
-            z-index: 5;
+            position: absolute; top: -3.5vh; left: 50%;
+            width: calc(200% + 5vw); height: 3.5vh;
+            border-top: 8px solid var(--arrow-color); border-left: 8px solid var(--arrow-color); border-right: 8px solid var(--arrow-color);
+            border-radius: 6px 6px 0 0; z-index: 5;
             animation: pulseBridge 2s infinite ease-in-out;
         }
         .img-arrow-bridge::after {
-            content: ''; position: absolute; bottom: -12px; right: -10px; /* Aligns tip perfectly */
+            content: ''; position: absolute; bottom: -12px; right: -10px;
             border-top: 14px solid var(--arrow-color); border-left: 12px solid transparent; border-right: 12px solid transparent;
         }
 
@@ -218,7 +215,7 @@
             .progress-container { display: block; }
             header { height: auto; flex-direction: column; padding: 1rem; text-align: center; gap: 15px; position: relative; }
             .logo-container { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-            .controls-group { width: 100%; justify-content: center; }
+            .controls-group { width: 100%; justify-content: center; flex-wrap: wrap; }
             .logo { height: 50px; }
             .title-box { text-align: center; }
 
@@ -231,17 +228,15 @@
             .card.active .collapsible-content { max-height: 1200px; opacity: 1; margin-top: 1vh; }
             .card.active .toggle-icon { transform: rotate(180deg); }
 
-            .stage-6, .stage-7, .stage-8a, .stage-8b, .stage-9, .stage-10 { grid-column: auto !important; grid-row: auto !important; }
+            .init-1, .init-2, .init-3, .init-4, .init-5,
+            .stage-6, .stage-7, .stage-8a, .stage-8b, .stage-9, .stage-10,
+            .comp-10, .comp-11, .comp-12, .comp-13, .comp-15, .comp-14 { grid-column: auto !important; grid-row: auto !important; }
             
-            /* Hide desktop arrows */
             .img-arrow-right, .img-arrow-down, .img-arrow-left, .img-arrow-bridge { display: none; } 
 
-            /* Mobile Vertical Flow Connectors */
             .card::after { content: "⬇"; position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 20px; color: var(--yd-red); animation: flowDownMobile 1.5s infinite ease-in-out; }
             
-            /* Remove arrow on dead-end and final stage */
-            .stage-8a::after, .stage-10::after { display: none; }
-
+            .init-3::after, .init-5::after, .stage-8a::after, .stage-10::after, .comp-14::after { display: none; }
             footer { height: auto; padding: 15px 10px; }
         }
 
@@ -263,40 +258,109 @@
             <img src="YDLOGO.png" alt="Yogi Ji Digi Logo" class="logo">
             <div class="controls-group">
                 <button class="theme-switch" id="theme-toggle">🌙 Dark Mode</button>
-                <a href="index.html" class="nav-btn">← Back to Initiation Flow</a>
+                <button class="nav-btn" id="btn-next-exec" onclick="showPage('page-execution')" style="display:none;">Next → Execution Flow</button>
+                <button class="nav-btn" id="btn-back-init" onclick="showPage('page-initiation')">← Back to Initiation Flow</button>
+                <button class="nav-btn" id="btn-next-comp" onclick="showPage('page-completion')">Project Completion →</button>
+                <button class="nav-btn" id="btn-back-exec" onclick="showPage('page-execution')" style="display:none;">← Back to Execution Flow</button>
             </div>
         </div>
         <div class="title-box">
             <h1>Project Execution Workflow</h1>
-            <p>Execution Phase</p>
+            <p id="dynamic-phase-title">Execution Phase</p>
         </div>
     </header>
 
-    <main>
-        
+    <main id="page-initiation" style="display: none;">
+        <div class="card init-1 active">
+            <div class="card-header">STAGE 1: Project Kick-Off <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Sales & Marketing</div>
+                    <ul class="names"><li>Commercial Team</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Initial client onboarding and requirement gathering.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Generates baseline project ID and registers initial expected deliverables.</div>
+                </div>
+            </div>
+            <div class="img-arrow-right"></div>
+        </div>
+
+        <div class="card init-2">
+            <div class="card-header">STAGE 2: Tech Feasibility <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Engineering</div>
+                    <ul class="names"><li>Design Directors</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Review of technical specs and machine constraints.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Validates feasibility metrics against standard YD manufacturing capabilities.</div>
+                </div>
+            </div>
+            <div class="img-arrow-right"></div>
+            <div class="img-arrow-bridge"></div>
+        </div>
+
+        <div class="card init-3">
+            <div class="card-header">STAGE 3: Cost Estimation <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Finance Team</div>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Raw material and resource cost calculation.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Outputs baseline cost sheet. (Parallel Process)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card init-4">
+            <div class="card-header">STAGE 4: Contract Signing <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Legal & Directors</div>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Finalization of terms, SLA, and dispatch timelines.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Locks delivery dates for subsequent PMO schedule generation.</div>
+                </div>
+            </div>
+            <div class="img-arrow-down"></div>
+        </div>
+
+        <div class="card init-5">
+            <div class="card-header" style="color:var(--yd-red);">STAGE 5: Master Schedule <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">PMO</div>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Creation of high-level Gantt and project milestones.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Approves the handover to Execution Phase. Prepares baseline for Stage 6.</div>
+                </div>
+            </div>
+            <div class="img-arrow-left"></div>
+        </div>
+    </main>
+
+    <main id="page-execution">
         <div class="card stage-6 active">
             <div class="card-header">STAGE 6: Tentative Billing Schedule <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Planning & Forecasting</div>
-                    <ul class="names">
-                        <li>Mr. Shivendu Sharma</li>
-                    </ul>
+                    <ul class="names"><li>Mr. Shivendu Sharma</li></ul>
                 </div>
                 <div class="action-text">
                     Tentative Billing Schedule sheet to be uploaded with:
-                    <ul>
-                        <li><strong>PROJECT</strong> (e.g., 2428-BMWIL-CGL)</li>
-                        <li><strong>ASSEMBLY</strong></li>
-                        <li><strong>DISPATCH MONTH</strong></li>
-                        <li><strong>BILLING VALUE</strong></li>
+                    <ul style="color:var(--text-main);">
+                        <li>PROJECT (e.g., 2428-BMWIL-CGL)</li>
+                        <li>ASSEMBLY</li>
+                        <li>DISPATCH MONTH & BILLING VALUE</li>
                     </ul>
-                    <em>Treated as Master</em>
                 </div>
-                 <div class="sla-box">
-                    ⏱️ SLA: <strong>7 Days</strong><br>
-                    ⚠️ Escalate: Mr. Navneet Singh & Mr. Sameer Bansal
-                </div>
+                 <div class="sla-box">⏱️ SLA: <strong>7 Days</strong><br>⚠️ Escalate: Navneet Singh / Sameer Bansal</div>
             </div>
             <div class="img-arrow-right"></div>
         </div>
@@ -306,14 +370,11 @@
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Directors</div>
-                    <ul class="names">
-                        <li>Mr. Navneet Singh</li>
-                        <li>Mr. Sameer Bansal</li>
-                    </ul>
+                    <ul class="names"><li>Mr. Navneet Singh</li><li>Mr. Sameer Bansal</li></ul>
                 </div>
                 <div class="action-text">
                     Reviews and approves the Tentative Billing Schedule.<br><br>
-                    <strong>Access:</strong> Shivendu Sharma, Aseem Gill, Mr. Navneet Singh & Mr. Sameer Bansal.
+                    <strong>Access:</strong> Shivendu S., Aseem G., Navneet S. & Sameer B.
                 </div>
             </div>
             <div class="img-arrow-right"></div>
@@ -328,34 +389,26 @@
                 </div>
                 <div class="action-text">
                     Full Tentative Billing Schedule consisting of:<br>
-                    <ul>
-                        <li><strong>PROJECT</strong> (e.g., 2428-BMWIL-CGL)</li>
-                        <li><strong>ASSEMBLY</strong></li>
-                        <li><strong>DISPATCH MONTH</strong></li>
-                        <li><strong>BILLING VALUE</strong></li>
+                    <ul style="color:var(--text-main);">
+                        <li>PROJECT & ASSEMBLY</li>
+                        <li>DISPATCH MONTH & VALUE</li>
                     </ul>
                 </div>
             </div>
-            </div>
+        </div>
 
         <div class="card stage-8b">
             <div class="card-header">STAGE 8: Dispatch Schedule <span class="toggle-icon">▼</span></div>
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Design Team</div>
-                    <ul class="names">
-                        <li>Mr. SK Tripathi (Director)</li>
-                        <li>Vinit Jain, Smith Kashid, Brijraj</li>
-                    </ul>
+                    <ul class="names"><li>Mr. SK Tripathi (Director)</li><li>Vinit Jain, Smith Kashid, Brijraj</li></ul>
                 </div>
                 <div class="action-text">
-                    Dispatch Schedule received consisting of: PROJECT, ASSEMBLY, DISPATCH MONTH.<br><br>
+                    Dispatch Schedule received.<br><br>
                     <span>Design Department to enter Drawing Release Date for every assembly.</span>
                 </div>
-                <div class="sla-box">
-                    ⏱️ SLA: <strong>2 Days</strong><br>
-                    ⚠️ Escalate: Mr. Navneet Singh & Mr. Sameer Bansal
-                </div>
+                <div class="sla-box">⏱️ SLA: <strong>2 Days</strong><br>⚠️ Escalate: Navneet Singh / Sameer Bansal</div>
             </div>
             <div class="img-arrow-down"></div>
         </div>
@@ -365,20 +418,13 @@
             <div class="collapsible-content">
                 <div class="roster">
                     <div class="roster-title">Executive Approval</div>
-                    <ul class="names">
-                        <li>Mr. Aseem Gill (VP)</li>
-                        <li>Mr. Varun Jay Rana (COO)</li>
-                    </ul>
+                    <ul class="names"><li>Mr. Aseem Gill (VP)</li><li>Mr. Varun Jay Rana (COO)</li></ul>
                 </div>
                 <div class="action-text">
                     Reviews tentative design release dates.<br><br>
-                    Once approved, all delivery dates are <strong style="color:var(--yd-red);">🔒 LOCKED</strong> and cannot be modified.<br><br>
-                    <em>Unlocks Execution Phase</em>
+                    Once approved, all delivery dates are <strong style="color:var(--yd-red);">🔒 LOCKED</strong>.
                 </div>
-                <div class="sla-box">
-                    ⏱️ SLA: <strong>2 Days</strong><br>
-                    ⚠️ Escalate: Mr. Navneet Singh & Mr. Sameer Bansal
-                </div>
+                <div class="sla-box">⏱️ SLA: <strong>2 Days</strong><br>⚠️ Escalate: Navneet Singh / Sameer Bansal</div>
             </div>
             <div class="img-arrow-left"></div>
         </div>
@@ -388,17 +434,104 @@
             <div class="collapsible-content">
                 <div class="roster" style="border-left-color: var(--success-green);">
                     <div class="roster-title" style="color: var(--success-green);">Design Team</div>
-                    <ul class="names">
-                        <li>Design Engineers</li>
-                    </ul>
                 </div>
                 <div class="action-text">
                     Uploads Drawings on the website.<br><br>
-                    <span>If Drawings need to be changed then a Change Request Form must be opened. Only the latest version is to be available on the website.</span>
+                    <span>Change Request Form required for changes. Only latest version available.</span>
                 </div>
             </div>
-            </div>
+        </div>
+    </main>
 
+    <main id="page-completion" style="display: none;">
+        <div class="card comp-10 active">
+            <div class="card-header">STAGE 10: Eng + SAP + Segregation <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Owner</div>
+                    <ul class="names"><li>Design Team</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Full breakdown of component structure and hierarchical segregation. Assignment of WBS to individual parts.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Enforces exact parent-child relationships (Assemblies → Subassemblies → Components) and validates Drawing Number, Revision, Quantity, and Material before proceeding.</div>
+                </div>
+            </div>
+            <div class="img-arrow-right"></div>
+        </div>
+
+        <div class="card comp-11">
+            <div class="card-header">STAGE 11: SAP + PO Generation <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Owner</div>
+                    <ul class="names"><li>Purchase Team</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Vendor allocation, strict SAP mapping for required components, and finalization of PO values.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Automatically fetches component demands from Stage 10. Links SAP item codes to generated PO numbers and locks the mapped value allocation.</div>
+                </div>
+            </div>
+            <div class="img-arrow-right"></div>
+        </div>
+
+        <div class="card comp-12">
+            <div class="card-header">STAGE 12: Component Tracking <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Owner</div>
+                    <ul class="names"><li>Store + PM</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>End-to-end component tracking lifecycle from dispatch at vendor to factory receipt.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Status dynamically transitions (Ordered → In Production → Received). Store teams authenticate physical receipts via SAP GRN matching.</div>
+                </div>
+            </div>
+            <div class="img-arrow-right"></div>
+        </div>
+
+        <div class="card comp-13">
+            <div class="card-header">STAGE 13: Assembly + Production <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Owner</div>
+                    <ul class="names"><li>Shop Floor</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Assembly execution on the floor based on matched full-kits and production scheduling.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Production run is strictly gated by SAP Full Kit logic. Cannot commence assembly unless all prerequisite components from Stage 12 are marked as 'Received'.</div>
+                </div>
+            </div>
+            <div class="img-arrow-down"></div>
+        </div>
+
+        <div class="card comp-15">
+            <div class="card-header" style="color:var(--yd-red);">STAGE 15: Dispatch <span class="toggle-icon">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster">
+                    <div class="roster-title">Owner</div>
+                    <ul class="names"><li>Logistics</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Physical dispatch of fully assembled and invoiced machineries to the client site.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Dispatch documentation is structurally linked to the Stage 14 invoice. Gate pass generation blocked until invoice validation is confirmed.</div>
+                </div>
+            </div>
+            <div class="img-arrow-left"></div>
+        </div>
+
+        <div class="card comp-14">
+            <div class="card-header" style="color: var(--success-green);">STAGE 14: Invoicing <span class="toggle-icon" style="color:var(--success-green);">▼</span></div>
+            <div class="collapsible-content">
+                <div class="roster" style="border-left-color: var(--success-green);">
+                    <div class="roster-title" style="color: var(--success-green);">Owner</div>
+                    <ul class="names"><li>Accounts</li></ul>
+                </div>
+                <div class="action-text">
+                    <div><strong>SCOPE:</strong><br>Financial verification and assembly-wise invoice generation for completed units.</div>
+                    <div><strong>SYSTEM LOGIC:</strong><br>Triggers revenue realization logic. Synchronizes completed assemblies from the shop floor directly into the billing queue.</div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -406,7 +539,51 @@
     </footer>
 
     <script>
-        // --- 1. DARK MODE TOGGLE ---
+        // --- 1. NAVIGATION LOGIC ---
+        function showPage(pageId) {
+            // Hide all pages
+            document.getElementById('page-initiation').style.display = 'none';
+            document.getElementById('page-execution').style.display = 'none';
+            document.getElementById('page-completion').style.display = 'none';
+
+            // Hide all navigation buttons initially
+            document.getElementById('btn-next-exec').style.display = 'none';
+            document.getElementById('btn-back-init').style.display = 'none';
+            document.getElementById('btn-next-comp').style.display = 'none';
+            document.getElementById('btn-back-exec').style.display = 'none';
+
+            // Show selected page
+            document.getElementById(pageId).style.display = '';
+
+            // Update Header Title and Buttons based on view
+            const titleEl = document.getElementById('dynamic-phase-title');
+            
+            if (pageId === 'page-initiation') {
+                titleEl.innerText = 'Initiation Phase';
+                document.getElementById('btn-next-exec').style.display = '';
+            } 
+            else if (pageId === 'page-execution') {
+                titleEl.innerText = 'Execution Phase';
+                document.getElementById('btn-back-init').style.display = '';
+                document.getElementById('btn-next-comp').style.display = '';
+            } 
+            else if (pageId === 'page-completion') {
+                titleEl.innerText = 'Completion Phase';
+                document.getElementById('btn-back-exec').style.display = '';
+            }
+
+            // Trigger animation reflow for CSS animations to play again
+            const targetPage = document.getElementById(pageId);
+            const cards = targetPage.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.animation = 'none';
+                card.offsetHeight; /* trigger reflow */
+                card.style.animation = null; 
+            });
+            window.scrollTo(0,0);
+        }
+
+        // --- 2. DARK MODE TOGGLE ---
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
@@ -417,7 +594,7 @@
             }
         });
 
-        // --- 2. MOBILE TAP-TO-EXPAND (ACCORDION) ---
+        // --- 3. MOBILE TAP-TO-EXPAND (ACCORDION) ---
         const cards = document.querySelectorAll('.card');
         cards.forEach(card => {
             const header = card.querySelector('.card-header');
@@ -438,7 +615,7 @@
             }
         });
 
-        // --- 3. LIVE SCROLL PROGRESS TRACKER (Mobile Only) ---
+        // --- 4. LIVE SCROLL PROGRESS TRACKER (Mobile Only) ---
         window.addEventListener('scroll', () => {
             if (window.innerWidth <= 1024) {
                 const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -447,6 +624,9 @@
                 document.getElementById('progressBar').style.width = progress + '%';
             }
         });
+
+        // Initialize state to show Execution Phase on first load to match original UX
+        showPage('page-execution');
     </script>
 
 </body>
